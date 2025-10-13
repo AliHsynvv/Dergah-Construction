@@ -2,8 +2,7 @@
 
 import { motion, useMotionValue, useAnimationFrame, animate } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import Navbar from "@/components/Navbar";
+import { useEffect, useRef, useState, useMemo } from "react";
 
 function PortfolioStrip() {
   const items = [
@@ -73,7 +72,7 @@ function Hero() {
   const projRef = useRef<HTMLSpanElement | null>(null);
 
   // Dynamic typing for headline: cycle through words with fast type/delete
-  const rotatingWords = ["müasir", "etibarlı"];
+  const rotatingWords = useMemo(() => ["müasir", "etibarlı"], []);
   const [wordIndex, setWordIndex] = useState(0);
   const [typed, setTyped] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -106,7 +105,7 @@ function Hero() {
       }
     }, deleting ? deleteSpeed : typeSpeed);
     return () => clearTimeout(id);
-  }, [typed, deleting, wordIndex]);
+  }, [typed, deleting, wordIndex, rotatingWords]);
 
   useEffect(() => {
     const el = trackRef.current;
@@ -345,7 +344,7 @@ function WhyUs() {
               viewport={{ once: true, amount: 0.25 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"
             >
-              {features.map((f, i) => (
+              {features.map((f) => (
                 <motion.div
                   key={f.title}
                   variants={itemVariants}

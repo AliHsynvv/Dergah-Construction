@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -9,17 +10,17 @@ export default function Navbar() {
     <nav className="fixed inset-x-0 top-3 z-50">
       <div className="mx-auto max-w-7xl px-3">
         <div className="px-6 py-3 flex items-center justify-between rounded-2xl border border-black/10 bg-white/60 backdrop-blur shadow-sm">
-          <a href="/" className="flex items-center hover:opacity-90 transition">
+          <Link href="/" className="flex items-center hover:opacity-90 transition">
             <span className="inline-flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-lg bg-slate-900/90 ring-1 ring-black/10">
               <Image src="/dergah%20logo%20.png" alt="Dargah Construction" width={32} height={32} className="rounded-[6px]" />
             </span>
-          </a>
+          </Link>
           <div className="hidden md:flex items-center gap-6 text-sm">
-            <a className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/">Ana səhifə</a>
-            <a className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/portfolio">Portfolio</a>
-            <a className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/services">Xidmətlər</a>
-            <a className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/about">Haqqımızda</a>
-            <a className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/contact">Əlaqə</a>
+            <Link className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/">Ana səhifə</Link>
+            <Link className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/portfolio">Portfolio</Link>
+            <Link className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/services">Xidmətlər</Link>
+            <Link className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/about">Haqqımızda</Link>
+            <Link className="text-slate-900 font-semibold hover:text-brand transition-colors" href="/contact">Əlaqə</Link>
           </div>
           <div className="flex items-center gap-2">
             <a
@@ -47,11 +48,11 @@ export default function Navbar() {
           <div className="md:hidden mt-2 px-3">
             <div className="rounded-2xl border border-black/10 bg-white/90 backdrop-blur shadow-sm py-3">
               <div className="grid gap-2 text-sm px-4">
-                <a onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/">Ana səhifə</a>
-                <a onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/portfolio">Portfolio</a>
-                <a onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/services">Xidmətlər</a>
-                <a onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/about">Haqqımızda</a>
-                <a onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/contact">Əlaqə</a>
+                <Link onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/">Ana səhifə</Link>
+                <Link onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/portfolio">Portfolio</Link>
+                <Link onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/services">Xidmətlər</Link>
+                <Link onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/about">Haqqımızda</Link>
+                <Link onClick={() => setOpen(false)} className="py-2 text-slate-900 font-semibold hover:text-brand transition-colors" href="/contact">Əlaqə</Link>
               </div>
             </div>
           </div>
