@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Share2, Check, Search, Loader2, Globe } from "lucide-react";
 
@@ -376,12 +376,6 @@ export default function CatalogPage() {
   }, [query, searchMode, searchInternet]);
 
   const filtered = useMemo(() => {
-    // If in internet mode, return internet results
-    if (searchMode === "internet") {
-      return internetResults;
-    }
-
-    // Local search
     const q = query.trim().toLowerCase();
     return ITEMS.filter((item) => {
       const matchesCategory = activeCategory === "all" || item.category === activeCategory;
@@ -403,7 +397,7 @@ export default function CatalogPage() {
         .toLowerCase();
       return haystack.includes(q);
     });
-  }, [query, activeCategory, selectedDesignType, selectedSubCategory, searchMode, internetResults]);
+  }, [query, activeCategory, selectedDesignType, selectedSubCategory]);
 
   function onSelectDesignType(next: "all" | DesignType) {
     setSelectedDesignType(next);
@@ -474,77 +468,16 @@ export default function CatalogPage() {
 
             {/* Modern Search Mode Toggle */}
             <div className="relative inline-flex items-center bg-slate-50/80 backdrop-blur-sm p-1 rounded-2xl border border-slate-200/50 shadow-sm">
-              <button
-                onClick={() => {
-                  setSearchMode("local");
-                  setSearchError(null);
-                }}
-                className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                  searchMode === "local"
-                    ? "bg-white text-brand shadow-md scale-105"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
-                }`}
-              >
+              <div className="relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-white text-brand shadow-md">
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                   <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                 </svg>
                 <span className="hidden sm:inline">Lokal</span>
-              </button>
-              <button
-                onClick={() => {
-                  setSearchMode("internet");
-                  setSearchError(null);
-                  if (query.trim()) {
-                    searchInternet(query);
-                  }
-                }}
-                className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                  searchMode === "internet"
-                    ? "bg-white text-brand shadow-md scale-105"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
-                }`}
-              >
-                <Globe className="h-4 w-4" />
-                <span className="hidden sm:inline">İnternet</span>
-              </button>
+              </div>
             </div>
           </div>
 
-          {/* Search Error Message */}
-          {searchError && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-3 p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-2xl text-sm text-red-700 shadow-sm"
-            >
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100">
-                <svg className="h-4 w-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <span className="flex-1">{searchError}</span>
-              <button
-                onClick={() => setSearchError(null)}
-                className="flex items-center justify-center w-6 h-6 rounded-lg text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
-              >
-                ✕
-              </button>
-            </motion.div>
-          )}
-
-          {/* Loading state for internet search */}
-          {searchMode === "internet" && isSearching && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-brand/5 via-blue-500/5 to-brand/5 backdrop-blur-sm border border-brand/10 rounded-2xl text-sm text-slate-700 shadow-sm"
-            >
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-brand/10">
-                <Loader2 className="h-4 w-4 animate-spin text-brand" />
-              </div>
-              <span className="font-medium">İnternetdən axtarılır...</span>
-            </motion.div>
-          )}
+          {/* Internet search removed */}
         </div>
 
         {/* Design type selector sidebar (md+) and horizontal (mobile) + subcategories on right */}
@@ -668,55 +601,30 @@ export default function CatalogPage() {
                 >
                   {selectedDesignType === "all" ? (
                     <div className="space-y-10">
-                      {/* Show internet results when in internet mode */}
-                      {searchMode === "internet" ? (
-                        filtered.length > 0 ? (
-                          <section>
+                      {availableDesignTypes.map((dt) => {
+                        const items = ITEMS.filter((i) => i.designType === dt).filter((i) => {
+                          const matchesCategory = activeCategory === "all" || i.category === activeCategory;
+                          if (!matchesCategory) return false;
+                          const q = query.trim().toLowerCase();
+                          if (!q) return true;
+                          const hay = [i.title, i.description, i.category, i.designType, i.subCategory, ...i.tags].join(" ").toLowerCase();
+                          return hay.includes(q);
+                        });
+                        if (items.length === 0) return null;
+                        return (
+                          <section key={dt}>
                             <div className="mb-3 flex items-center justify-between">
                               <div className="flex items-center gap-3">
-                                <Globe className="h-6 w-6 text-blue-600" />
-                                <h2 className="text-lg md:text-xl font-semibold">İnternet Nəticələri</h2>
-                                <span className="text-sm text-slate-500">({filtered.length} nəticə)</span>
-                              </div>
-                            </div>
-                            <HorizontalSlider items={filtered} onShare={handleShare} copiedId={copiedId} />
-                          </section>
-                        ) : !isSearching && query.trim() ? (
-                          <div className="rounded-2xl border-2 border-slate-200/60 bg-white/80 backdrop-blur-md p-8 text-center text-slate-700 shadow-lg">
-                            <div className="mb-4">
-                              <Globe className="mx-auto h-12 w-12 text-slate-400" />
-                            </div>
-                            <h3 className="text-lg font-semibold mb-2">İnternetdə nəticə tapılmadı</h3>
-                            <p className="text-slate-600">Başqa açar sözlər yoxlayın. İngilis dildə axtarış daha yaxşı nəticələr verir.</p>
-                          </div>
-                        ) : null
-                      ) : (
-                        /* Show local results by design type */
-                        availableDesignTypes.map((dt) => {
-                          const items = ITEMS.filter((i) => i.designType === dt).filter((i) => {
-                            const matchesCategory = activeCategory === "all" || i.category === activeCategory;
-                            if (!matchesCategory) return false;
-                            const q = query.trim().toLowerCase();
-                            if (!q) return true;
-                            const hay = [i.title, i.description, i.category, i.designType, i.subCategory, ...i.tags].join(" ").toLowerCase();
-                            return hay.includes(q);
-                          });
-                          if (items.length === 0) return null;
-                          return (
-                            <section key={dt}>
-                              <div className="mb-3 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <div className="h-8 w-12 relative rounded-lg overflow-hidden border border-black/10">
-                                    <Image src={DESIGN_TYPE_THUMBS[dt]} alt={DESIGN_TYPE_LABEL[dt]} fill className="object-cover" />
-                                  </div>
-                                  <h2 className="text-lg md:text-xl font-semibold">{DESIGN_TYPE_LABEL[dt]}</h2>
+                                <div className="h-8 w-12 relative rounded-lg overflow-hidden border border-black/10">
+                                  <Image src={DESIGN_TYPE_THUMBS[dt]} alt={DESIGN_TYPE_LABEL[dt]} fill className="object-cover" />
                                 </div>
+                                <h2 className="text-lg md:text-xl font-semibold">{DESIGN_TYPE_LABEL[dt]}</h2>
                               </div>
-                              <HorizontalSlider items={items} onShare={handleShare} copiedId={copiedId} />
-                            </section>
-                          );
-                        })
-                      )}
+                            </div>
+                            <HorizontalSlider items={items} onShare={handleShare} copiedId={copiedId} />
+                          </section>
+                        );
+                      })}
                     </div>
                   ) : (
                     <>
