@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useAnimationFrame, animate, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -46,8 +47,7 @@ function PortfolioStrip({ darkMode }: { darkMode: boolean }) {
               {t.home.portfolio.subtitle}
             </p>
           </div>
-          <motion.a
-            href="/portfolio"
+          <motion.div
             className={`group inline-flex items-center text-sm font-semibold transition-colors duration-500 ${
               darkMode 
                 ? 'text-blue-400 hover:text-blue-300' 
@@ -56,11 +56,13 @@ function PortfolioStrip({ darkMode }: { darkMode: boolean }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            {t.home.portfolio.viewAll}
-            <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </motion.a>
+            <Link href="/portfolio" className="inline-flex items-center">
+              {t.home.portfolio.viewAll}
+              <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
+          </motion.div>
         </motion.div>
 
         <div className={`relative overflow-hidden rounded-2xl backdrop-blur-sm shadow-lg transition-all duration-500 ${
@@ -312,7 +314,7 @@ function Hero({ darkMode }: { darkMode: boolean }) {
               transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
               className="mt-8 md:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 w-full sm:w-auto"
             >
-              <a
+              <Link
                 href="/portfolio"
                 className={`group inline-flex justify-center items-center rounded-xl text-white px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 w-full sm:w-auto ${
                   darkMode 
@@ -324,8 +326,8 @@ function Hero({ darkMode }: { darkMode: boolean }) {
                 <svg className="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 className={`inline-flex justify-center items-center rounded-xl border-2 px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold transition-all duration-300 w-full sm:w-auto ${
                   darkMode 
@@ -334,7 +336,7 @@ function Hero({ darkMode }: { darkMode: boolean }) {
                 }`}
               >
                 {t.home.hero.contactBtn}
-              </a>
+              </Link>
             </motion.div>
           </motion.div>
 
