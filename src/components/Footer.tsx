@@ -264,7 +264,7 @@ export default function Footer({ darkMode }: FooterProps) {
                 { label: t.footer.links.privacy, href: "#" },
                 { label: t.footer.links.terms, href: "#" },
                 { label: t.footer.links.support, href: "#" }
-              ].map((link, index) => (
+              ].map((link) => (
                 <motion.a
                   key={link.label}
                   href={link.href}

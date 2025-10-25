@@ -7,7 +7,6 @@ import {
   Wrench,
   Briefcase,
   Trees,
-  HardHat,
   Building2,
   Zap,
   Shield,

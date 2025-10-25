@@ -4,7 +4,6 @@ const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
-  // eslint-disable-next-line no-console
   console.warn("Supabase server env vars are missing. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.");
 }
 

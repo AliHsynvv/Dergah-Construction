@@ -19,7 +19,6 @@ export default function Navbar({ darkMode, toggleDarkMode }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const { scrollY } = useScroll();
-  const navbarOpacity = useTransform(scrollY, [0, 100], [0.9, 0.95]);
   const navbarBlur = useTransform(scrollY, [0, 100], [8, 16]);
   const { language, setLanguage, t } = useLanguage();
 
