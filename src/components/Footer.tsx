@@ -1,50 +1,236 @@
-export default function Footer() {
-  return (
-    <footer className="mt-16 border-t border-black/10 bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Company */}
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="inline-block h-3 w-3 rounded-full bg-brand" />
-              <span className="text-base font-semibold tracking-tight">Dargah Construction</span>
-            </div>
-            <p className="mt-3 text-sm text-slate-600 max-w-prose">
-              Müasir memarlıq və inşaat həlləri. Keyfiyyət, etibarlılıq və vaxtında təhvil — əsas prioritetlərimizdir.
-            </p>
-            <div className="mt-4 flex items-center gap-3">
-              <a aria-label="Instagram" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 hover:border-brand text-slate-700 hover:text-brand transition" href="#">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm0 2h10c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3zm5 3.5A5.5 5.5 0 1 0 17.5 13 5.51 5.51 0 0 0 12 7.5zm0 2A3.5 3.5 0 1 1 8.5 13 3.5 3.5 0 0 1 12 9.5zM18 6.5a1 1 0 1 0 1 1 1 1 0 0 0-1-1z"/></svg>
-              </a>
-              <a aria-label="LinkedIn" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 hover:border-brand text-slate-700 hover:text-brand transition" href="#">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v16H0zM8 8h4.8v2.2h.1c.7-1.2 2.4-2.5 4.9-2.5 5.2 0 6.2 3.4 6.2 7.8V24h-5V16c0-1.9 0-4.3-2.6-4.3-2.6 0-3 2-3 4.1V24H8z"/></svg>
-              </a>
-              <a aria-label="Email" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 hover:border-brand text-slate-700 hover:text-brand transition" href="mailto:info@dargah.az">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6Zm2 .5 8 5 8-5V6H4v.5Z"/></svg>
-              </a>
-            </div>
-          </div>
+"use client";
 
-          {/* Contact */}
-          <div>
-            <h3 className="text-base font-semibold tracking-tight">Əlaqə</h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-700">
-              <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-brand" /> Bakı, Azərbaycan</li>
-              <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-brand" /> Tel: <a className="hover:text-brand" href="tel:+994702999998">+994 70 299 99 98</a></li>
-              <li className="flex items-start gap-2"><span className="mt-1 inline-block h-2 w-2 rounded-full bg-brand" /> E-poçt: <a className="hover:text-brand" href="mailto:info@dargah.az">info@dargah.az</a></li>
-            </ul>
-            <div className="mt-4 text-sm text-slate-700">
-              <div className="font-semibold">İş saatları</div>
-              <div>B.e. – Cümə: 09:00 – 18:00</div>
-              <div>Şənbə: 10:00 – 16:00</div>
-              <div>Bazar: Bağlı</div>
+import { motion } from "framer-motion";
+import { MapPin, Phone, Mail, Clock, Instagram, Linkedin } from "lucide-react";
+import Image from "next/image";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+interface FooterProps {
+  darkMode: boolean;
+}
+
+export default function Footer({ darkMode }: FooterProps) {
+  const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24
+      }
+    }
+  };
+
+  return (
+    <footer className="relative mt-20 overflow-hidden transition-colors duration-500">
+      {/* Background gradient */}
+      <div className={`absolute inset-0 transition-colors duration-500 ${
+        darkMode 
+          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900/95' 
+          : 'bg-gradient-to-br from-slate-50 via-white to-blue-50/30'
+      }`}>
+        <div className={`absolute top-0 left-0 -mt-40 -ml-40 h-80 w-80 rounded-full blur-3xl transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-to-br from-blue-600/15 to-blue-500/10' 
+            : 'bg-gradient-to-br from-brand/10 to-blue-400/10'
+        }`} />
+        <div className={`absolute bottom-0 right-0 -mb-40 -mr-40 h-72 w-72 rounded-full blur-3xl transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-to-tr from-slate-700/20 to-blue-600/5' 
+            : 'bg-gradient-to-tr from-slate-200/20 to-brand/5'
+        }`} />
+      </div>
+
+      <motion.div
+        className="relative mx-auto max-w-7xl px-6 py-16"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
+          {/* Company Info */}
+          <motion.div variants={itemVariants} className="lg:col-span-2">
+            <div className="flex items-center gap-3 mb-4">
+              <motion.div
+                className="relative"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="relative inline-flex h-16 w-16 items-center justify-center rounded-lg shadow-lg overflow-hidden">
+                  <Image
+                    src="/dergah-logo.png"
+                    alt="Dargah Construction"
+                    width={64}
+                    height={64}
+                    className="object-contain"
+                  />
+                </div>
+              </motion.div>
+              <div>
+                <h3 className={`text-xl font-bold bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+                  darkMode 
+                    ? 'from-blue-400 to-blue-200' 
+                    : 'from-slate-900 to-slate-700'
+                }`}>
+                  Dargah Construction
+                </h3>
+                <p className={`text-sm transition-colors duration-500 ${
+                  darkMode ? 'text-slate-300' : 'text-slate-600'
+                }`}>{t.footer.tagline}</p>
+              </div>
             </div>
-          </div>
+
+            <p className={`leading-relaxed mb-6 max-w-md transition-colors duration-500 ${
+              darkMode ? 'text-slate-300' : 'text-slate-600'
+            }`}>
+              {t.footer.description}
+            </p>
+
+            <div className="flex items-center gap-4">
+              {[
+                {
+                  icon: Instagram,
+                  href: "#",
+                  label: "Instagram",
+                  gradient: "from-pink-500 to-purple-600"
+                },
+                {
+                  icon: Linkedin,
+                  href: "#",
+                  label: "LinkedIn",
+                  gradient: "from-blue-600 to-blue-800"
+                },
+                {
+                  icon: Mail,
+                  href: "mailto:info@dargah.az",
+                  label: "Email",
+                  gradient: "from-slate-600 to-slate-800"
+                }
+              ].map((social, index) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  aria-label={social.label}
+                  className={`inline-flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${social.gradient} text-white shadow-lg hover:shadow-xl transition-all duration-300`}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 + 0.5 }}
+                >
+                  <social.icon className="h-5 w-5" />
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Contact Info */}
+          <motion.div variants={itemVariants}>
+            <h4 className={`text-lg font-semibold mb-6 transition-colors duration-500 ${
+              darkMode ? 'text-white' : 'text-slate-900'
+            }`}>{t.footer.contact}</h4>
+
+            <div className="space-y-4">
+              {[
+                {
+                  icon: MapPin,
+                  content: t.footer.address,
+                  href: "https://maps.google.com/?q=Baku,+Azerbaijan"
+                },
+                {
+                  icon: Phone,
+                  content: t.footer.phone,
+                  href: "tel:+994702999998"
+                },
+                {
+                  icon: Mail,
+                  content: t.footer.email,
+                  href: "mailto:info@dargah.az"
+                }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="flex items-start gap-3 group"
+                  whileHover={{ x: 4 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                >
+                  <div className={`inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br ${index === 0 ? 'from-blue-500 to-blue-600' : index === 1 ? 'from-emerald-500 to-emerald-600' : 'from-purple-500 to-purple-600'} text-white shadow-sm`}>
+                    <item.icon className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1">
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className={`font-medium transition-colors duration-500 ${
+                          darkMode 
+                            ? 'text-slate-200 hover:text-blue-400' 
+                            : 'text-slate-700 hover:text-brand'
+                        }`}
+                      >
+                        {item.content}
+                      </a>
+                    ) : (
+                      <span className={`font-medium transition-colors duration-500 ${
+                        darkMode ? 'text-slate-200' : 'text-slate-700'
+                      }`}>{item.content}</span>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+
+              <div className={`pt-4 border-t transition-colors duration-500 ${
+                darkMode ? 'border-slate-700' : 'border-slate-200'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className={`h-4 w-4 transition-colors duration-500 ${
+                    darkMode ? 'text-blue-400' : 'text-brand'
+                  }`} />
+                  <span className={`font-semibold transition-colors duration-500 ${
+                    darkMode ? 'text-white' : 'text-slate-900'
+                  }`}>{t.footer.workHours}</span>
+                </div>
+                <div className={`space-y-1 text-sm ml-6 transition-colors duration-500 ${
+                  darkMode ? 'text-slate-300' : 'text-slate-600'
+                }`}>
+                  <div>{t.footer.workHoursDetails.weekdays}</div>
+                  <div>{t.footer.workHoursDetails.saturday}</div>
+                  <div>{t.footer.workHoursDetails.sunday}</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Map */}
-          <div>
-            <h3 className="text-base font-semibold tracking-tight">Xəritə</h3>
-            <div className="mt-3 overflow-hidden rounded-2xl border border-black/10 shadow-sm">
+          <motion.div variants={itemVariants}>
+            <h4 className={`text-lg font-semibold mb-6 transition-colors duration-500 ${
+              darkMode ? 'text-white' : 'text-slate-900'
+            }`}>{t.footer.location}</h4>
+            <motion.div
+              className={`overflow-hidden rounded-2xl border shadow-lg transition-all duration-500 ${
+                darkMode 
+                  ? 'border-slate-700 bg-slate-800' 
+                  : 'border-slate-200 bg-white'
+              }`}
+              whileHover={{ y: -2 }}
+              transition={{ type: "spring", stiffness: 300, damping: 24 }}
+            >
               <iframe
                 title="Dargah Location"
                 src="https://www.google.com/maps?q=Baku%2C%20Azerbaijan&output=embed"
@@ -52,20 +238,52 @@ export default function Footer() {
                 referrerPolicy="no-referrer-when-downgrade"
                 className="h-48 md:h-56 w-full"
               />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-600">
-          <div>© {new Date().getFullYear()} Dargah Construction. Bütün hüquqlar qorunur.</div>
-          <div className="flex items-center gap-4">
-            <a className="hover:text-brand" href="#">Məxfilik</a>
-            <a className="hover:text-brand" href="#">Şərtlər</a>
-            <a className="hover:text-brand" href="#">Dəstək</a>
+        {/* Bottom Bar */}
+        <motion.div
+          className={`mt-12 pt-8 border-t transition-colors duration-500 ${
+            darkMode ? 'border-slate-700' : 'border-slate-200'
+          }`}
+          variants={itemVariants}
+        >
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <motion.div
+              className={`text-sm transition-colors duration-500 ${
+                darkMode ? 'text-slate-300' : 'text-slate-600'
+              }`}
+              whileHover={{ scale: 1.02 }}
+            >
+              © {currentYear} Dargah Construction. {t.footer.copyright}
+            </motion.div>
+
+            <div className="flex items-center gap-6">
+              {[
+                { label: t.footer.links.privacy, href: "#" },
+                { label: t.footer.links.terms, href: "#" },
+                { label: t.footer.links.support, href: "#" }
+              ].map((link, index) => (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  className={`text-sm relative group transition-colors duration-500 ${
+                    darkMode 
+                      ? 'text-slate-300 hover:text-blue-400' 
+                      : 'text-slate-600 hover:text-brand'
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {link.label}
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-brand scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                </motion.a>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </footer>
   );
 }

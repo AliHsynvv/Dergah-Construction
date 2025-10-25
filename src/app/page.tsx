@@ -1,10 +1,13 @@
 "use client";
 
-import { motion, useMotionValue, useAnimationFrame, animate } from "framer-motion";
+import { motion, useMotionValue, useAnimationFrame, animate, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState, useMemo } from "react";
+import { Moon, Sun } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-function PortfolioStrip() {
+function PortfolioStrip({ darkMode }: { darkMode: boolean }) {
+  const { t } = useLanguage();
   const items = [
     "/portfolio/p1.png",
     "/portfolio/pr2.png",
@@ -14,46 +17,112 @@ function PortfolioStrip() {
   ];
   const slides = [...items, ...items];
   return (
-    <section id="portfolio" className="py-12 md:py-16">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl md:text-2xl font-semibold tracking-tight">Portfolio</h2>
-          <a href="/portfolio" className="text-sm text-brand hover:underline">Hamısına bax</a>
-        </div>
-        <div className="relative overflow-hidden">
+    <section id="portfolio" className="relative py-16 md:py-20 overflow-hidden transition-colors duration-500">
+      {/* Background gradient */}
+      <div className={`absolute inset-0 transition-colors duration-500 ${
+        darkMode 
+          ? 'bg-gradient-to-r from-slate-800/50 via-slate-900 to-slate-800/30' 
+          : 'bg-gradient-to-r from-slate-50/50 via-white to-blue-50/30'
+      }`} />
+
+      <div className="mx-auto max-w-7xl px-6 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="flex items-center justify-between mb-8"
+        >
+          <div>
+            <h2 className={`text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+              darkMode 
+                ? 'from-blue-400 to-blue-200' 
+                : 'from-slate-900 to-slate-700'
+            }`}>
+              {t.home.portfolio.title}
+            </h2>
+            <p className={`mt-1 text-sm md:text-base transition-colors duration-500 ${
+              darkMode ? 'text-slate-300' : 'text-slate-600'
+            }`}>
+              {t.home.portfolio.subtitle}
+            </p>
+          </div>
+          <motion.a
+            href="/portfolio"
+            className={`group inline-flex items-center text-sm font-semibold transition-colors duration-500 ${
+              darkMode 
+                ? 'text-blue-400 hover:text-blue-300' 
+                : 'text-brand hover:text-blue-700'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {t.home.portfolio.viewAll}
+            <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </motion.a>
+        </motion.div>
+
+        <div className={`relative overflow-hidden rounded-2xl backdrop-blur-sm shadow-lg transition-all duration-500 ${
+          darkMode 
+            ? 'bg-gradient-to-r from-slate-800/60 via-slate-700/80 to-slate-800/60 border border-slate-700/20' 
+            : 'bg-gradient-to-r from-white/60 via-white/80 to-white/60 border border-white/20'
+        }`}>
           <motion.div
-            className="flex gap-3 will-change-transform"
+            className="flex gap-4 will-change-transform py-4"
             animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 18, ease: "linear", repeat: Infinity }}
+            transition={{ duration: 20, ease: "linear", repeat: Infinity }}
           >
             {slides.map((src, i) => (
-              <div key={i} className="relative h-28 md:h-36 w-[75vw] sm:w-[220px] md:w-[280px] shrink-0 rounded-xl overflow-hidden bg-white/40 backdrop-blur border border-black/10 shadow-md">
-            <Image
+              <motion.div
+                key={i}
+                className={`relative h-32 md:h-40 w-[80vw] sm:w-[240px] md:w-[300px] shrink-0 rounded-xl overflow-hidden backdrop-blur shadow-md hover:shadow-lg transition-all duration-300 ${
+                  darkMode 
+                    ? 'bg-slate-800/60 border border-slate-700/30' 
+                    : 'bg-white/60 border border-white/30'
+                }`}
+                whileHover={{ scale: 1.02, y: -2 }}
+                transition={{ type: "spring", stiffness: 300, damping: 24 }}
+              >
+                <Image
                   src={src}
                   alt={`Portfolio ${i + 1}`}
                   fill
-                  sizes="(max-width: 768px) 60vw, 30vw"
+                  sizes="(max-width: 768px) 80vw, 30vw"
                   className="object-cover"
                   draggable={false}
                 />
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-20"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(circle at 20px 20px, rgba(249, 115, 22, 0.15) 2px, transparent 2px)",
-                    backgroundSize: "24px 24px",
-                  }}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                <div className="pointer-events-none absolute inset-0 opacity-10"
+                     style={{
+                       backgroundImage: "radial-gradient(circle at 25px 25px, rgba(30, 58, 138, 0.2) 3px, transparent 3px)",
+                       backgroundSize: "30px 30px",
+                     }}
                 />
-              </div>
+              </motion.div>
             ))}
           </motion.div>
+
+          {/* Gradient overlays for smooth fade effect */}
+          <div className={`absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r pointer-events-none transition-all duration-500 ${
+            darkMode ? 'from-slate-900/80' : 'from-white/80'
+          } to-transparent`} />
+          <div className={`absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l pointer-events-none transition-all duration-500 ${
+            darkMode ? 'from-slate-900/80' : 'from-white/80'
+          } to-transparent`} />
         </div>
       </div>
     </section>
   );
 }
 
-function Hero() {
+function Hero({ darkMode }: { darkMode: boolean }) {
+  const { t } = useLanguage();
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 300], [0, -50]);
+  const y2 = useTransform(scrollY, [0, 300], [0, -30]);
+  const opacity = useTransform(scrollY, [0, 200], [1, 0.8]);
+
   // Five cards (reuse available assets)
   const cards = [
     { src: "/dergah%20villa.png", title: "Villa layihəsi" },
@@ -150,69 +219,144 @@ function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full pt-24 pb-24 md:pt-28 md:pb-32 bg-white">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid md:grid-cols-2 gap-10 items-center">
-          <div>
+    <section className="relative w-full pt-32 pb-24 md:pt-40 md:pb-40 overflow-hidden transition-colors duration-500">
+      {/* Modern gradient background with animated elements */}
+      <div className={`absolute inset-0 transition-colors duration-500 ${
+        darkMode 
+          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900/95' 
+          : 'bg-gradient-to-br from-white via-slate-50 to-blue-50/30'
+      }`}>
+        <div className={`absolute top-0 right-0 -mt-40 -mr-40 h-96 w-96 rounded-full blur-3xl animate-pulse transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-to-br from-blue-600/30 to-blue-500/20' 
+            : 'bg-gradient-to-br from-brand/20 to-blue-400/20'
+        }`} />
+        <div className={`absolute bottom-0 left-0 -mb-40 -ml-40 h-80 w-80 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-to-tr from-slate-700/40 to-blue-600/10' 
+            : 'bg-gradient-to-tr from-slate-200/40 to-brand/10'
+        }`} />
+        <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-64 w-64 rounded-full blur-2xl transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-radial from-blue-500/10 to-transparent' 
+            : 'bg-gradient-radial from-brand/5 to-transparent'
+        }`} />
+      </div>
+
+      <motion.div
+        className="mx-auto max-w-7xl px-6 relative"
+        style={{ y: y1, opacity }}
+      >
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <motion.div style={{ y: y2 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className={`mb-4 inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors duration-500 ${
+                darkMode 
+                  ? 'bg-blue-500/20 text-blue-300' 
+                  : 'bg-brand/10 text-brand'
+              }`}
+            >
+              ✨ {t.home.badge}
+            </motion.div>
+
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-3xl md:text-5xl font-bold tracking-tight"
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+              className={`text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight transition-colors duration-500 ${
+                darkMode ? 'text-white' : ''
+              }`}
             >
-              Memarlıq və tikintidə{' '}
+              Memarlıq və{' '}
               <span className="relative inline-block align-baseline">
                 <span className="invisible">{maxWord}</span>
-                <span className="absolute inset-0 text-brand inline-flex items-center">
+                <span className={`absolute inset-0 bg-gradient-to-r bg-clip-text text-transparent inline-flex items-center transition-colors duration-500 ${
+                  darkMode 
+                    ? 'from-blue-400 to-blue-200' 
+                    : 'from-brand to-blue-700'
+                }`}>
                   {typed}
-                  <span
-            aria-hidden
-                    className="ml-[1px] h-[1em] w-[2px] bg-brand inline-block align-[-0.15em] animate-pulse"
+                  <motion.span
+                    aria-hidden
+                    className={`ml-1 h-[1.2em] w-[3px] inline-block align-[-0.15em] transition-colors duration-500 ${
+                      darkMode 
+                        ? 'bg-gradient-to-b from-blue-400 to-blue-200' 
+                        : 'bg-gradient-to-b from-brand to-blue-700'
+                    }`}
+                    animate={{ opacity: [1, 0, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
                   />
                 </span>
               </span>{' '}
-              həllər
+              tikinti həlləri
               <span className="sr-only" aria-live="polite">{rotatingWords[wordIndex]}</span>
             </motion.h1>
+
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-              className="mt-4 text-base md:text-lg text-slate-600 max-w-prose"
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+              className={`mt-6 text-lg md:text-xl max-w-2xl leading-relaxed transition-colors duration-500 ${
+                darkMode ? 'text-slate-300' : 'text-slate-600'
+              }`}
             >
-              Dargah Construction — yaşayış və kommersiya layihələri üçün planlaşdırma,
-              dizayn və yüksək keyfiyyətli inşaat xidmətləri təqdim edir.
+              {t.home.hero.description}
             </motion.p>
+
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-              className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto"
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+              className="mt-8 md:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 w-full sm:w-auto"
             >
               <a
                 href="/portfolio"
-                className="inline-flex justify-center items-center rounded-xl bg-brand text-white px-5 py-2.5 text-sm font-medium shadow-sm hover:opacity-90 transition w-full sm:w-auto"
+                className={`group inline-flex justify-center items-center rounded-xl text-white px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 w-full sm:w-auto ${
+                  darkMode 
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-500' 
+                    : 'bg-gradient-to-r from-brand to-blue-700'
+                }`}
               >
-                Layihələrimiz
-        </a>
-        <a
+                <span>{t.home.hero.projectsBtn}</span>
+                <svg className="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </a>
+              <a
                 href="/contact"
-                className="inline-flex justify-center items-center rounded-xl border border-black/10 text-slate-800 px-5 py-2.5 text-sm font-medium hover:border-black/20 transition w-full sm:w-auto"
+                className={`inline-flex justify-center items-center rounded-xl border-2 px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold transition-all duration-300 w-full sm:w-auto ${
+                  darkMode 
+                    ? 'border-slate-600 text-slate-200 hover:border-blue-400 hover:text-blue-300 hover:bg-blue-500/10' 
+                    : 'border-slate-200 text-slate-700 hover:border-brand hover:text-brand hover:bg-brand/5'
+                }`}
               >
-                Bizimlə əlaqə
+                {t.home.hero.contactBtn}
               </a>
             </motion.div>
-          </div>
+          </motion.div>
+
           <div className="relative">
-            <div style={{ perspective: "1200px" }}>
+            <motion.div
+              style={{ perspective: "1200px" }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            >
               <div
-                className="relative aspect-[4/3] w-full md:max-w-[680px] ml-0 md:ml-auto overflow-hidden rounded-2xl border border-black/10 shadow-lg bg-white/60 backdrop-blur"
+                className={`relative aspect-[4/3] w-full md:max-w-[680px] ml-0 md:ml-auto overflow-hidden rounded-3xl border-2 shadow-2xl backdrop-blur-xl transition-all duration-500 ${
+                  darkMode 
+                    ? 'border-slate-700/30 bg-gradient-to-br from-slate-800/80 to-slate-900/60' 
+                    : 'border-white/20 bg-gradient-to-br from-white/80 to-white/40'
+                }`}
                 onMouseEnter={() => setIsHover(true)}
                 onMouseLeave={() => setIsHover(false)}
               >
                 <motion.div
                   ref={trackRef}
-                  className="absolute inset-0 flex items-stretch gap-3 px-2 sm:px-3 touch-pan-y"
+                  className="absolute inset-0 flex items-stretch gap-4 px-3 sm:px-4 touch-pan-y"
                   style={{ x }}
                   drag="x"
                   dragConstraints={{ left: -Infinity, right: Infinity }}
@@ -223,151 +367,322 @@ function Hero() {
                   {loop.map((card, i) => (
                     <motion.div
                       key={`hero-card-${i}`}
-                      className="relative h-full w-[78vw] sm:w-[240px] md:w-[280px] shrink-0 overflow-hidden rounded-xl border border-black/10 bg-white/40 shadow-md"
-                      whileHover={{ scale: 1.03, boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}
+                      className={`relative h-full w-[75vw] sm:w-[240px] md:w-[280px] shrink-0 overflow-hidden rounded-2xl border shadow-lg transition-colors duration-500 ${
+                        darkMode 
+                          ? 'border-slate-700/30 bg-slate-800/60' 
+                          : 'border-white/30 bg-white/60'
+                      }`}
+                      whileHover={{
+                        scale: 1.05,
+                        boxShadow: darkMode ? "0 20px 40px rgba(0,0,0,0.4)" : "0 20px 40px rgba(0,0,0,0.15)",
+                        rotateY: 5,
+                        rotateX: 2
+                      }}
                       transition={{ type: "spring", stiffness: 300, damping: 24 }}
-        >
-          <Image
+                    >
+                      <Image
                         src={card.src}
                         alt={card.title}
                         fill
-                        sizes="(max-width: 768px) 80vw, 40vw"
+                        sizes="(max-width: 768px) 75vw, 40vw"
                         className="object-cover"
                         draggable={false}
                       />
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
-                      <div className="absolute bottom-2 left-2 right-2 text-white text-xs md:text-sm font-medium drop-shadow">
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      <div className="absolute bottom-3 left-3 right-3 text-white text-sm md:text-base font-semibold drop-shadow-lg">
                         {card.title}
                       </div>
                     </motion.div>
                   ))}
                 </motion.div>
               </div>
-            </div>
+            </motion.div>
+
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.25 }}
-              className="absolute -bottom-6 -left-6 hidden md:block rounded-xl bg-white px-4 py-3 border border-black/5 shadow-sm"
+              initial={{ opacity: 0, y: 12, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
+              className="absolute -bottom-8 -left-8 hidden md:block rounded-2xl bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-xl px-6 py-4 border border-white/30 shadow-xl"
             >
-              <div className="text-xs text-slate-600"><span ref={expRef}>0+</span> il təcrübə</div>
-              <div className="text-sm font-medium"><span ref={projRef}>0+</span> tamamlanmış layihə</div>
+              <div className="text-sm text-slate-600 mb-1">
+                <span ref={expRef} className="font-bold text-brand">0+</span> il təcrübə
+              </div>
+              <div className="text-base font-semibold text-slate-800">
+                <span ref={projRef} className="font-bold text-brand">0+</span> tamamlanmış layihə
+              </div>
             </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
 
 export default function Home() {
+  // Dark mode state - synced with ConditionalLayout via localStorage
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      setDarkMode(JSON.parse(saved));
+    }
+
+    // Listen for dark mode changes from other components
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('darkMode');
+      if (saved !== null) {
+        setDarkMode(JSON.parse(saved));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom event from same page
+    const handleDarkModeChange = () => {
+      const saved = localStorage.getItem('darkMode');
+      if (saved !== null) {
+        setDarkMode(JSON.parse(saved));
+      }
+    };
+    
+    window.addEventListener('darkModeChange', handleDarkModeChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('darkModeChange', handleDarkModeChange);
+    };
+  }, []);
+
   return (
-    <div className="font-sans min-h-screen bg-white">
-      <Hero />
-      <PortfolioStrip />
-      <WhyUs />
+    <div className={`font-sans min-h-screen transition-colors duration-500 overflow-x-hidden ${darkMode ? 'bg-slate-900' : 'bg-white'}`}>
+      <Hero darkMode={darkMode} />
+      <PortfolioStrip darkMode={darkMode} />
+      <WhyUs darkMode={darkMode} />
     </div>
   );
 }
 
-function WhyUs() {
+function WhyUs({ darkMode }: { darkMode: boolean }) {
+  const { t } = useLanguage();
   const features = [
     {
-      title: "Peşəkar komanda",
-      desc: "Təcrübəli memarlar və ustalarla layihələriniz təhlükəsiz əllərdədir.",
+      title: t.home.whyUs.features.team.title,
+      desc: t.home.whyUs.features.team.desc,
       icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6 text-brand" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg viewBox="0 0 24 24" className="h-7 w-7 text-white" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z" />
           <path d="M3 21a9 9 0 0 1 18 0" />
         </svg>
       ),
+      gradient: "from-blue-500 to-blue-600",
     },
     {
-      title: "Zamanında təslim",
-      desc: "Dəqiq planlama ilə işlər vaxtında və səmərəli tamamlanır.",
+      title: t.home.whyUs.features.delivery.title,
+      desc: t.home.whyUs.features.delivery.desc,
       icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6 text-brand" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg viewBox="0 0 24 24" className="h-7 w-7 text-white" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="9" />
           <path d="M12 7v5l3 2" />
         </svg>
       ),
+      gradient: "from-emerald-500 to-emerald-600",
     },
     {
-      title: "Yüksək keyfiyyət",
-      desc: "Material və icrada premium standartlara sadiqik.",
+      title: t.home.whyUs.features.quality.title,
+      desc: t.home.whyUs.features.quality.desc,
       icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6 text-brand" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg viewBox="0 0 24 24" className="h-7 w-7 text-white" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 2 15 8l6 .9-4.3 4.2L17.5 20 12 17.3 6.5 20l.8-6.9L3 8.9 9 8Z" />
         </svg>
       ),
+      gradient: "from-blue-600 to-blue-700",
     },
     {
-      title: "Şəffaf büdcə",
-      desc: "Aydın smeta və xərclər — sürprizlərsiz proses.",
+      title: t.home.whyUs.features.budget.title,
+      desc: t.home.whyUs.features.budget.desc,
       icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6 text-brand" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg viewBox="0 0 24 24" className="h-7 w-7 text-white" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M3 7h18v10H3Z" />
           <path d="M7 7V5h10v2" />
           <path d="M9 12h6" />
         </svg>
       ),
+      gradient: "from-purple-500 to-purple-600",
     },
   ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+    show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
   } as const;
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 18 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 260, damping: 26 } },
+    hidden: { opacity: 0, y: 30, scale: 0.9 },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { type: "spring", stiffness: 260, damping: 26 }
+    },
   } as const;
 
   return (
-    <section className="relative py-12 md:py-16">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="relative overflow-hidden rounded-3xl border border-black/5 bg-gradient-to-br from-brand/5 via-white to-brand/10">
-          <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-brand/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -right-10 h-56 w-56 rounded-full bg-orange-300/10 blur-3xl" />
+    <section className="relative py-20 md:py-24 overflow-hidden transition-colors duration-500">
+      {/* Enhanced background with multiple gradient layers */}
+      <div className={`absolute inset-0 transition-colors duration-500 ${
+        darkMode 
+          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900/95' 
+          : 'bg-gradient-to-br from-slate-50 via-white to-blue-50/40'
+      }`}>
+        <div className={`absolute top-0 right-0 -mt-32 -mr-32 h-80 w-80 rounded-full blur-3xl animate-pulse transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-to-br from-blue-600/20 to-blue-500/15' 
+            : 'bg-gradient-to-br from-brand/15 to-blue-400/15'
+        }`} />
+        <div className={`absolute bottom-0 left-0 -mb-32 -ml-32 h-72 w-72 rounded-full blur-3xl animate-pulse delay-1000 transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-to-tr from-slate-700/30 to-blue-600/10' 
+            : 'bg-gradient-to-tr from-slate-200/30 to-brand/10'
+        }`} />
+        <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full blur-3xl transition-colors duration-500 ${
+          darkMode 
+            ? 'bg-gradient-radial from-blue-500/8 to-transparent' 
+            : 'bg-gradient-radial from-brand/3 to-transparent'
+        }`} />
+      </div>
 
-          <div className="px-6 py-8 md:px-10 md:py-12">
-            <div className="mb-6 md:mb-8">
-              <h2 className="text-xl md:text-2xl font-semibold tracking-tight">Niyə biz?</h2>
-              <p className="mt-1 text-slate-600 text-sm md:text-base">Etibarlı tərəfdaşınız — planlamadan təhvilə qədər.</p>
-            </div>
+      <div className="mx-auto max-w-7xl px-6 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center mb-16"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`inline-flex items-center rounded-full px-8 py-3 mb-8 transition-colors duration-500 ${
+              darkMode 
+                ? 'bg-gradient-to-r from-blue-500/20 to-blue-600/15' 
+                : 'bg-gradient-to-r from-brand/10 to-blue-600/10'
+            }`}
+          >
+            <span className={`text-base md:text-lg font-semibold transition-colors duration-500 ${
+              darkMode ? 'text-blue-300' : 'text-brand'
+            }`}>{t.home.whyUs.badge}</span>
+          </motion.div>
 
+          <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-8">
+            <span className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+              darkMode 
+                ? 'from-slate-100 via-slate-200 to-slate-100' 
+                : 'from-slate-900 via-slate-800 to-slate-900'
+            }`}>
+              {t.home.whyUs.title1}
+            </span>
+            <br />
+            <span className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+              darkMode 
+                ? 'from-blue-400 to-blue-300' 
+                : 'from-brand to-blue-700'
+            }`}>
+              {t.home.whyUs.title2}
+            </span>
+          </h2>
+
+          <p className={`text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed transition-colors duration-500 ${
+            darkMode ? 'text-slate-300' : 'text-slate-600'
+          }`}>
+            {t.home.whyUs.description}
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-stretch"
+        >
+          {features.map((feature, index) => (
             <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"
+              key={feature.title}
+              variants={itemVariants}
+              className="group relative h-full"
+              whileHover={{ y: -8 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              {features.map((f) => (
-                <motion.div
-                  key={f.title}
-                  variants={itemVariants}
-                  className="group relative rounded-2xl border border-black/10 bg-white/70 backdrop-blur hover:bg-white shadow-sm hover:shadow-md transition-shadow"
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <div className="absolute inset-0 rounded-2xl ring-0 group-hover:ring-1 ring-brand/30 transition" />
-                  <div className="p-5">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand/10">
-                        {f.icon}
-                      </div>
-                      <h3 className="text-sm md:text-base font-semibold tracking-tight">{f.title}</h3>
+              <div className={`relative h-full rounded-3xl backdrop-blur-xl border shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden ${
+                darkMode 
+                  ? 'bg-slate-800/80 border-slate-700/30' 
+                  : 'bg-white/80 border-white/20'
+              }`}>
+                {/* Gradient background overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+
+                {/* Animated border */}
+                <div className={`absolute inset-0 rounded-3xl ring-0 group-hover:ring-2 transition-all duration-300 ${
+                  darkMode ? 'ring-blue-500/30' : 'ring-brand/20'
+                }`} />
+
+                <div className="relative h-full p-8 flex flex-col">
+                  <div className="mb-6">
+                    <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-lg`}>
+                      {feature.icon}
                     </div>
-                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
-                      {f.desc}
-                    </p>
                   </div>
-                </motion.div>
-              ))}
+
+                  <h3 className={`text-lg md:text-xl font-bold tracking-tight mb-4 transition-colors duration-500 ${
+                    darkMode 
+                      ? 'text-slate-100 group-hover:text-white' 
+                      : 'text-slate-900 group-hover:text-slate-800'
+                  }`}>
+                    {feature.title}
+                  </h3>
+
+                  <p className={`text-sm md:text-base leading-relaxed transition-colors duration-500 flex-1 ${
+                    darkMode 
+                      ? 'text-slate-300 group-hover:text-slate-200' 
+                      : 'text-slate-600 group-hover:text-slate-700'
+                  }`}>
+                    {feature.desc}
+                  </p>
+
+                  {/* Decorative element */}
+                  <div className={`absolute top-4 right-4 w-20 h-20 rounded-full bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                    darkMode ? 'from-blue-500/10 to-transparent' : 'from-brand/5 to-transparent'
+                  }`} />
+                </div>
+              </div>
             </motion.div>
-          </div>
-        </div>
+          ))}
+        </motion.div>
+
+        {/* Call to action */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+          className="text-center mt-16"
+        >
+          <motion.a
+            href="/about"
+            className={`group inline-flex items-center text-base font-semibold transition-colors duration-500 ${
+              darkMode 
+                ? 'text-blue-400 hover:text-blue-300' 
+                : 'text-brand hover:text-blue-700'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {t.home.whyUs.learnMore}
+            <svg className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </motion.a>
+        </motion.div>
       </div>
     </section>
   );

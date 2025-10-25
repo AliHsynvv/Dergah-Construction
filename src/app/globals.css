@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #0f172a; /* slate-900 for readable dark text on white */
-  --brand: #f97316; /* orange-500 */
+  --brand: #1e3a8a; /* navy blue (blue-900) */
   --brand-foreground: #ffffff;
 }
 
@@ -24,8 +24,98 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
+  margin: 0;
   background: var(--background);
+  /* Subtle grid + multiple navy blue gradients over white base */
+  background-image:
+    /* gradients */
+    radial-gradient(1200px 600px at 0% 10%, rgba(30, 58, 138, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(59, 130, 246, 0.05), transparent 55%),
+    radial-gradient(1000px 500px at 100% 100%, rgba(30, 58, 138, 0.04), transparent 60%),
+    radial-gradient(800px 400px at 0% 100%, rgba(29, 78, 216, 0.04), transparent 60%),
+    radial-gradient(700px 350px at 50% 50%, rgba(30, 58, 138, 0.03), transparent 70%);
+  background-size:
+    auto,
+    auto,
+    auto,
+    auto,
+    auto;
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat;
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  transition: background-color 0.5s ease, background-image 0.5s ease;
+}
+
+/* Dark mode styles */
+html.dark body {
+  background: #0f172a; /* slate-900 */
+  background-image:
+    /* Dark mode gradients with blue tones */
+    radial-gradient(1200px 600px at 0% 10%, rgba(59, 130, 246, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(37, 99, 235, 0.06), transparent 55%),
+    radial-gradient(1000px 500px at 100% 100%, rgba(59, 130, 246, 0.05), transparent 60%),
+    radial-gradient(800px 400px at 0% 100%, rgba(37, 99, 235, 0.05), transparent 60%),
+    radial-gradient(700px 350px at 50% 50%, rgba(59, 130, 246, 0.04), transparent 70%);
+  color: #f1f5f9; /* slate-100 */
+}
+
+/* Responsive font scaling */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1025px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Custom scrollbar styles */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(30, 58, 138, 0.2);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.scrollbar-thin:hover::-webkit-scrollbar-thumb {
+  background: rgba(30, 58, 138, 0.4);
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(30, 58, 138, 0.2) transparent;
 }

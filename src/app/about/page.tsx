@@ -1,20 +1,88 @@
 "use client";
 
-import { motion, animate, useInView } from "framer-motion";
+import { motion, animate, useInView, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import {
+  Users,
+  TrendingUp,
+  Heart,
+  Target,
+  Eye,
+  Shield,
+  Award,
+  Clock,
+  CheckCircle,
+  Star,
+  MapPin,
+  Calendar,
+  Building2,
+  Lightbulb,
+  Handshake,
+  Home
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export default function AboutPage() {
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 400], [0, -50]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.8]);
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Load dark mode preference from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      setDarkMode(JSON.parse(saved));
+    }
+
+    // Listen for dark mode changes from other components
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('darkMode');
+      if (saved !== null) {
+        setDarkMode(JSON.parse(saved));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom event from same page
+    const handleDarkModeChange = () => {
+      const saved = localStorage.getItem('darkMode');
+      if (saved !== null) {
+        setDarkMode(JSON.parse(saved));
+      }
+    };
+    
+    window.addEventListener('darkModeChange', handleDarkModeChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('darkModeChange', handleDarkModeChange);
+    };
+  }, []);
+
   const stats = [
-    { label: "İl təcrübə", value: 10 },
-    { label: "Layihə", value: 100 },
-    { label: "Məmnun müştəri", value: 85 },
+    { label: "İl təcrübə", value: 10, icon: <Calendar className="h-5 w-5" />, gradient: "from-blue-500 to-blue-600" },
+    { label: "Layihə", value: 100, icon: <Building2 className="h-5 w-5" />, gradient: "from-emerald-500 to-emerald-600" },
+    { label: "Məmnun müştəri", value: 85, icon: <Heart className="h-5 w-5" />, gradient: "from-rose-500 to-pink-600" },
   ];
 
-  const container = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.08 } } } as const;
-  const item = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 260, damping: 26 } } } as const;
+  const container = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } }
+  } as const;
 
-  function AnimatedStat({ value, label }: { value: number; label: string }) {
+  const item = {
+    hidden: { opacity: 0, y: 30, scale: 0.9 },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { type: "spring", stiffness: 300, damping: 25 }
+    }
+  } as const;
+
+  function AnimatedStat({ value, label, icon, gradient, darkMode }: { value: number; label: string; icon: React.ReactNode; gradient: string; darkMode: boolean }) {
     const scopeRef = useRef<HTMLDivElement | null>(null);
     const numRef = useRef<HTMLSpanElement | null>(null);
     const inView = useInView(scopeRef, { once: true, amount: 0.5 });
@@ -22,7 +90,7 @@ export default function AboutPage() {
     useEffect(() => {
       if (!inView || !numRef.current) return;
       const controls = animate(0, value, {
-        duration: 1.2,
+        duration: 1.5,
         ease: "easeOut",
         onUpdate: (v) => {
           if (numRef.current) numRef.current.textContent = `${Math.floor(v)}`;
@@ -34,152 +102,435 @@ export default function AboutPage() {
     return (
       <motion.div
         ref={scopeRef}
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20, scale: 0.9 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true, amount: 0.3 }}
-        className="rounded-xl border border-black/10 bg-white/70 backdrop-blur p-5 text-center shadow-sm"
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className={`group relative rounded-2xl backdrop-blur-xl border shadow-lg hover:shadow-xl transition-all duration-500 p-8 text-center ${
+          darkMode 
+            ? 'bg-slate-800/90 border-slate-700/20' 
+            : 'bg-white/90 border-white/20'
+        }`}
+        whileHover={{ y: -4 }}
       >
-        <div className="text-2xl md:text-3xl font-bold text-slate-900"><span ref={numRef}>0</span>+</div>
-        <div className="text-sm text-slate-600">{label}</div>
+        {/* Gradient background overlay */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+
+        <div className="relative">
+          <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} shadow-lg mb-4`}>
+            <div className="text-white">
+              {icon}
+            </div>
+          </div>
+
+          <div className="text-3xl md:text-4xl font-bold mb-2">
+            <span ref={numRef} className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+              darkMode 
+                ? 'from-slate-100 to-slate-200' 
+                : 'from-slate-900 to-slate-700'
+            }`}>0</span>
+            <span className={`transition-colors duration-500 ${
+              darkMode ? 'text-blue-400' : 'text-brand'
+            }`}>+</span>
+          </div>
+
+          <div className={`text-sm md:text-base font-medium transition-colors duration-500 ${
+            darkMode ? 'text-slate-300' : 'text-slate-700'
+          }`}>{label}</div>
+        </div>
       </motion.div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* Hero */}
-      <section className="relative pt-24 md:pt-28 pb-16 overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <Image src="/dergah%20villa.png" alt="About background" fill className="object-cover opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white via-white/70 to-white" />
-        </div>
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid md:grid-cols-2 items-start gap-8">
-            <div>
-              <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-3xl md:text-4xl font-bold tracking-tight">
-                Haqqımızda
-              </motion.h1>
-              <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="mt-3 max-w-2xl text-slate-700">
-                Dargah Construction — müasir memarlıq və inşaat həllləri təqdim edən peşəkar komandadır. Keyfiyyət, etibarlılıq və vaxtında təhvil əsas dəyərlərimizdir. Müştəri yönümlü yanaşma ilə dizayn-dan icraya qədər bütün mərhələləri şəffaf şəkildə idarə edirik, təhlükəsizlik standartlarına, material keyfiyyətinə və budcəyə ciddi riayət edirik. Layihələrimizi dayanıqlılıq, estetik və funksionallığın balansı üzərində qururuq.
-              </motion.p>
+    <main className={`min-h-screen transition-colors duration-500 ${
+      darkMode ? 'bg-slate-900' : 'bg-white'
+    }`}>
 
-              {/* Inline Timeline directly under text */}
-              <div className="mt-6">
-                <h2 className="text-base md:text-lg font-semibold tracking-tight mb-3">Yolumuz</h2>
-                <div className="relative pl-6 md:pl-8">
-                  <div className="absolute left-2 md:left-3 top-0 bottom-0 w-px bg-black/10" />
-                  {[
-                    { year: "2015", text: "Şirkətin əsası qoyuldu." },
-                    { year: "2018", text: "İlk iri yaşayış layihəsi tamamlandı." },
-                    { year: "2021", text: "Komersiya portfeli genişləndirildi." },
-                    { year: "2024", text: "Daxili dizayn və layihələndirmə xidmətləri gücləndirildi." },
-                  ].map((e, i) => (
-                    <motion.div key={e.year} initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5, delay: i * 0.05 }} className="relative mb-4">
-                      <div className="absolute -left-[10px] md:-left-[12px] mt-1 h-2.5 w-2.5 rounded-full bg-brand" />
-                      <div className="flex items-start gap-3">
-                        <div className="text-xs md:text-sm font-semibold text-slate-900 w-12 md:w-14 shrink-0">{e.year}</div>
-                        <div className="text-xs md:text-sm text-slate-700">{e.text}</div>
+      {/* Hero Section */}
+      <section className="relative pt-32 md:pt-40 pb-20 md:pb-24">
+        <motion.div
+          className="mx-auto max-w-7xl px-6"
+          style={{ y: y1, opacity }}
+        >
+          {/* Header Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`inline-flex items-center rounded-full px-6 py-2 mb-8 transition-colors duration-500 ${
+              darkMode 
+                ? 'bg-gradient-to-r from-blue-500/20 to-blue-600/15' 
+                : 'bg-gradient-to-r from-brand/10 to-blue-600/10'
+            }`}
+          >
+            <span className={`text-sm font-medium transition-colors duration-500 ${
+              darkMode ? 'text-blue-300' : 'text-brand'
+            }`}>Haqqımızda</span>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6">
+                <span className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+                  darkMode 
+                    ? 'from-slate-100 via-slate-200 to-slate-100' 
+                    : 'from-slate-900 via-slate-800 to-slate-900'
+                }`}>
+                  Peşəkar komanda
+                </span>
+                <br className="hidden sm:block" />
+                <span className="sm:hidden"> </span>
+                <span className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+                  darkMode 
+                    ? 'from-blue-400 to-blue-300' 
+                    : 'from-brand to-blue-700'
+                }`}>
+                  ilə mükəmməllik
+                </span>
+              </h1>
+
+              <p className={`text-base sm:text-lg md:text-xl leading-relaxed mb-6 md:mb-8 px-4 sm:px-0 transition-colors duration-500 ${
+                darkMode ? 'text-slate-300' : 'text-slate-600'
+              }`}>
+                Dargah Construction — müasir memarlıq və inşaat həllləri təqdim edən peşəkar komandadır.
+                Keyfiyyət, etibarlılıq və vaxtında təhvil əsas dəyərlərimizdir.
+              </p>
+
+              {/* Key Points */}
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {[
+                  { icon: <Shield className="h-5 w-5" />, text: "Keyfiyyət zəmanəti" },
+                  { icon: <Clock className="h-5 w-5" />, text: "Vaxtında təhvil" },
+                  { icon: <Handshake className="h-5 w-5" />, text: "Şəffaf qiymətlər" },
+                  { icon: <Award className="h-5 w-5" />, text: "Sertifikatlı komanda" },
+                ].map((point, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="flex items-center gap-3"
+                  >
+                    <div className={`inline-flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-500 ${
+                      darkMode 
+                        ? 'bg-blue-500/20 text-blue-400' 
+                        : 'bg-brand/10 text-brand'
+                    }`}>
+                      {point.icon}
                       </div>
+                    <span className={`text-sm font-medium transition-colors duration-500 ${
+                      darkMode ? 'text-slate-200' : 'text-slate-700'
+                    }`}>{point.text}</span>
                     </motion.div>
                   ))}
                 </div>
+            </motion.div>
+
+            {/* Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+              className="relative"
+            >
+              <div className={`relative w-full aspect-[4/3] rounded-3xl overflow-hidden border-2 shadow-2xl backdrop-blur-xl transition-all duration-500 ${
+                darkMode 
+                  ? 'border-slate-700/20 bg-gradient-to-br from-slate-800/80 to-slate-700/40' 
+                  : 'border-white/20 bg-gradient-to-br from-white/80 to-white/40'
+              }`}>
+                <Image
+                  src="/images/dargah%20pro.png"
+                  alt="Dargah layihəsi"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               </div>
-            </div>
-            <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.6 }} className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-black/10 shadow-md">
-              <Image src="/images/dargah%20pro.png" alt="Dargah layihəsi" fill className="object-cover" priority sizes="(max-width: 768px) 100vw, 50vw" />
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Team Preview - Bizim Heyyət */}
-      <section id="komanda" className="py-10 md:py-12">
+      {/* Timeline Section */}
+      <section className="py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Bizim Heyyət</h2>
-            <p className="mt-2 text-slate-700">Peşəkar komandamız hər layihəyə maksimum diqqət və qayğı göstərir.</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+              <span className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+                darkMode 
+                  ? 'from-slate-100 to-slate-200' 
+                  : 'from-slate-900 to-slate-700'
+              }`}>
+                İnkişaf yolumuz
+              </span>
+            </h2>
+            <p className={`max-w-2xl mx-auto transition-colors duration-500 ${
+              darkMode ? 'text-slate-300' : 'text-slate-600'
+            }`}>
+              Dargah Construction-ın uğur hekayəsi və böyümə mərhələləri
+            </p>
+          </motion.div>
 
-          <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
-            {[
-              { title: "Rəhbər", desc: "Layihələrin idarə edilməsi və strateji planlaşdırma", img: "/Team/anr%20last.png", icon: (
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4Z"/></svg>
-              ) },
-              { title: "Memar", desc: "Yaradıcı dizayn həlləri və layihə hazırlanması", img: "/images/mdrn%20interier.webp", icon: (
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M4 13h16v2H4zm0 4h10v2H4zM14 5l6 6h-6z"/></svg>
-              ) },
-              { title: "Mühəndis", desc: "Texniki həllər və konstruksiya işləri", img: "/dergah%20villa.png", icon: (
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor"><path d="M10 2h4v4h-4zM3 13h4v4H3zM17 13h4v4h-4zM11 18h2v4h-2zM4 7h4v4H4zM16 7h4v4h-4z"/></svg>
-              ) },
-            ].map((m) => (
-              <motion.article key={m.title} variants={item} className="relative overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm">
-                <div className="relative h-48 md:h-56">
-                  <Image src={m.img} alt={m.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
-                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 h-12 w-12 rounded-full bg-white border border-black/10 shadow-sm flex items-center justify-center">
-                    {m.icon}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, staggerChildren: 0.12, delayChildren: 0.1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            className="relative"
+          >
+            {/* Timeline Line */}
+            <div className={`absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 transform md:-translate-x-0.5 transition-colors duration-500 ${
+              darkMode 
+                ? 'bg-gradient-to-b from-blue-500/20 via-blue-500/40 to-blue-500/20' 
+                : 'bg-gradient-to-b from-brand/20 via-brand/40 to-brand/20'
+            }`} />
+
+            <div className="space-y-8 md:space-y-12">
+              {[
+                {
+                  year: "2015",
+                  title: "Təməl atıldı",
+                  desc: "Şirkətimiz inşaat sektorunda fəaliyyətə başladı",
+                  icon: <Building2 className="h-5 w-5" />,
+                  gradient: "from-blue-500 to-blue-600"
+                },
+                {
+                  year: "2018",
+                  title: "İlk iri layihə",
+                  desc: "Premium yaşayış kompleksi uğurla tamamlandı",
+                  icon: <Home className="h-5 w-5" />,
+                  gradient: "from-emerald-500 to-emerald-600"
+                },
+                {
+                  year: "2021",
+                  title: "Komersiya genişlənməsi",
+                  desc: "Ofis və ticarət mərkəzləri portfeli genişləndirildi",
+                  icon: <TrendingUp className="h-5 w-5" />,
+                  gradient: "from-purple-500 to-purple-600"
+                },
+                {
+                  year: "2024",
+                  title: "Tam xidmət spektrumu",
+                  desc: "Daxili dizayn və layihələndirmə xidmətləri əlavə edildi",
+                  icon: <Lightbulb className="h-5 w-5" />,
+                  gradient: "from-blue-600 to-blue-700"
+                },
+              ].map((milestone, index) => (
+                <motion.div
+                  key={milestone.year}
+                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: { type: "spring", stiffness: 300, damping: 25 }
+              }}
+              viewport={{ once: true }}
+                  className={`relative flex items-center gap-6 md:gap-8 ${
+                    index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                  } flex-col md:flex-row`}
+                >
+                  {/* Timeline Dot */}
+                  <div className={`absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-gradient-to-r ${milestone.gradient} shadow-lg transform md:-translate-x-2 z-10`} />
+
+                  {/* Content Card */}
+                  <motion.div
+                    className={`flex-1 p-6 md:p-8 rounded-2xl backdrop-blur-xl border shadow-lg hover:shadow-xl transition-all duration-500 ${
+                      index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'
+                    } ${
+                      darkMode 
+                        ? 'bg-slate-800/90 border-slate-700/20' 
+                        : 'bg-white/90 border-white/20'
+                    }`}
+                    whileHover={{ y: -2 }}
+                  >
+                    <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${milestone.gradient} shadow-lg mb-4`}>
+                      <div className="text-white">
+                        {milestone.icon}
                   </div>
                 </div>
-                <div className="pt-8 pb-5 px-5 text-center">
-                  <div className="text-lg font-semibold tracking-tight">{m.title}</div>
-                  <div className="mt-1 text-slate-700 text-sm">{m.desc}</div>
+
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className={`text-sm font-bold px-3 py-1 rounded-full transition-colors duration-500 ${
+                        darkMode 
+                          ? 'text-blue-400 bg-blue-500/20' 
+                          : 'text-brand bg-brand/10'
+                      }`}>
+                        {milestone.year}
+                      </span>
                 </div>
-              </motion.article>
-            ))}
+
+                    <h3 className={`text-lg md:text-xl font-bold mb-3 transition-colors duration-500 ${
+                      darkMode ? 'text-slate-100' : 'text-slate-900'
+                    }`}>
+                      {milestone.title}
+                    </h3>
+
+                    <p className={`leading-relaxed transition-colors duration-500 ${
+                      darkMode ? 'text-slate-300' : 'text-slate-600'
+                    }`}>
+                      {milestone.desc}
+                    </p>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Mission / Vision / Values */}
-      <section className="py-10 md:py-12">
+      <section className="py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-6">Missiya, Vizyon, Dəyərlər</h2>
-          <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-4">
+              <span className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+                darkMode 
+                  ? 'from-slate-100 to-slate-200' 
+                  : 'from-slate-900 to-slate-700'
+              }`}>
+                Missiya, Vizyon və Dəyərlər
+              </span>
+            </h2>
+            <p className={`max-w-2xl mx-auto transition-colors duration-500 ${
+              darkMode ? 'text-slate-300' : 'text-slate-600'
+            }`}>
+              Şirkətimizin əsas prinsipləri və gələcəyə baxışı
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, staggerChildren: 0.12, delayChildren: 0.1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
+          >
             {[
               {
                 title: "Missiya",
-                text: "Müştərilərimizə yüksək keyfiyyətli, etibarlı və estetik tikinti həllləri təqdim etmək.",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1 3-7z"/></svg>
-                ),
+                text: "Müştərilərimizə yüksək keyfiyyətli, etibarlı və estetik tikinti həllləri təqdim etmək. Hər bir layihəni unikal ehtiyaclara uyğun şəkildə həyata keçirmək.",
+                icon: <Target className="h-6 w-6" />,
+                gradient: "from-blue-500 to-blue-600",
+                bgGradient: "from-blue-50 to-blue-100"
               },
               {
                 title: "Vizyon",
-                text: "Regionda ən etibarlı və yenilikçi inşaat tərəfdaşı olmaq.",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M12 5c-5 0-9 5-9 7s4 7 9 7 9-5 9-7-4-7-9-7zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
-                ),
+                text: "Regionda ən etibarlı və yenilikçi inşaat tərəfdaşı olmaq. Sektorun standartlarını müəyyən edən lider şirkət kimi tanınmaq.",
+                icon: <Eye className="h-6 w-6" />,
+                gradient: "from-emerald-500 to-emerald-600",
+                bgGradient: "from-emerald-50 to-emerald-100"
               },
               {
                 title: "Dəyərlər",
-                text: "Şəffaflıq, məsuliyyət, komanda işi və dayanıqlılıq.",
-                icon: (
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                ),
+                text: "Şəffaflıq, məsuliyyət, komanda işi və dayanıqlılıq. Müştərilərimizlə uzunmüddətli əməkdaşlıq qurmağa və sektorun inkişafına töhfə verməyə inanırıq.",
+                icon: <Users className="h-6 w-6" />,
+                gradient: "from-purple-500 to-purple-600",
+                bgGradient: "from-purple-50 to-purple-100"
               },
-            ].map((f) => (
-              <motion.div key={f.title} variants={item} className="rounded-2xl border border-black/10 bg-white/70 backdrop-blur p-5 shadow-sm hover:shadow-md">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand/10 text-brand">
-                    {f.icon}
+            ].map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: { type: "spring", stiffness: 300, damping: 25 }
+              }}
+              viewport={{ once: true }}
+                className={`group relative rounded-3xl border shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden ${
+                  darkMode 
+                    ? 'bg-gradient-to-br from-slate-800/90 to-slate-700/60 border-slate-700/20' 
+                    : `bg-gradient-to-br ${item.bgGradient} border-white/20`
+                }`}
+                whileHover={{ y: -4, scale: 1.02 }}
+              >
+                {/* Gradient overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+
+                <div className="relative p-8">
+                  <div className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} shadow-lg mb-6`}>
+                    <div className="text-white">
+                      {item.icon}
+                    </div>
                   </div>
-                  <h3 className="text-base font-semibold tracking-tight">{f.title}</h3>
+
+                  <h3 className={`text-xl md:text-2xl font-bold mb-4 transition-colors duration-500 ${
+                    darkMode ? 'text-slate-100' : 'text-slate-900'
+                  }`}>
+                    {item.title}
+                  </h3>
+
+                  <p className={`leading-relaxed transition-colors duration-500 ${
+                    darkMode ? 'text-slate-300' : 'text-slate-600'
+                  }`}>
+                    {item.text}
+                  </p>
                 </div>
-                <p className="text-sm text-slate-700 leading-relaxed">{f.text}</p>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Stats Preview */}
-      <section className="py-10 md:py-12">
+      {/* Stats Section */}
+      <section className="py-16 md:py-20">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-3 gap-4 md:gap-6">
-            {stats.map((s) => (
-              <AnimatedStat key={s.label} value={s.value} label={s.label} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-4">
+              <span className={`bg-gradient-to-r bg-clip-text text-transparent transition-colors duration-500 ${
+                darkMode 
+                  ? 'from-slate-100 to-slate-200' 
+                  : 'from-slate-900 to-slate-700'
+              }`}>
+                Rəqəmlərlə Dargah
+              </span>
+            </h2>
+            <p className={`max-w-2xl mx-auto transition-colors duration-500 ${
+              darkMode ? 'text-slate-300' : 'text-slate-600'
+            }`}>
+              Uğurlarımız və nailiyyətlərimiz rəqəmlərdə
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, staggerChildren: 0.12, delayChildren: 0.1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
+          >
+            {stats.map((stat, index) => (
+              <AnimatedStat key={stat.label} value={stat.value} label={stat.label} icon={stat.icon} gradient={stat.gradient} darkMode={darkMode} />
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
