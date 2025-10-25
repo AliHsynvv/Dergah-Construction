@@ -62,7 +62,7 @@ export default function PortfolioPage() {
   const [darkMode, setDarkMode] = useState(false);
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, -50]);
-  const opacity = useTransform(scrollY, [0, 200], [1, 0.8]);
+  const opacityVal = useTransform(scrollY, [0, 200], [1, 0.8]);
 
   // Load dark mode preference from localStorage
   useEffect(() => {

@@ -4,7 +4,6 @@ import { motion, animate, useInView, useScroll, useTransform } from "framer-moti
 import Image from "next/image";
 import {
   Users,
-  TrendingUp,
   Heart,
   Target,
   Eye,
@@ -16,9 +15,7 @@ import {
   MapPin,
   Calendar,
   Building2,
-  Lightbulb,
   Handshake,
-  Home
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 

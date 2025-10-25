@@ -12,11 +12,7 @@ import {
   Clock,
   Award,
   Building2,
-  Home,
-  TrendingUp,
-  Lightbulb
 } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { use } from "react";
 
 type ProjectDetail = {
@@ -156,7 +152,7 @@ export default function ProjectDetailPage({ params }: PageProps) {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-slate-900 mb-4">Layihə tapılmadı</h1>
           <Link href="/portfolio" className="text-brand hover:text-blue-700 transition-colors">
-            Portfolio'ya qayıt
+            Portfolio&#39;ya qayıt
           </Link>
         </div>
       </main>
@@ -195,7 +191,7 @@ export default function ProjectDetailPage({ params }: PageProps) {
               className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors group"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              <span>Portfolio'ya qayıt</span>
+              <span>Portfolio&#39;ya qayıt</span>
             </Link>
           </motion.div>
 
