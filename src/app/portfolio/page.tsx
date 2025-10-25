@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 type Project = {
+  id: string;
   title: string;
   category: string;
   desc: string;
