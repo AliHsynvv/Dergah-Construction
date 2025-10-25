@@ -182,7 +182,40 @@ export async function GET(request: NextRequest) {
 
     console.log(`🔍 Image search request: query="${query}", provider="${provider}"`);
 
-    let data;
+    let data:
+      | {
+          results: Array<{
+            id: string;
+            title: string;
+            description: string;
+            image: string;
+            imageSmall: string;
+            imageThumb: string;
+            photographer: string;
+            photographerUrl: string;
+            downloadUrl: string;
+            tags: string[];
+          }>;
+          total: number;
+          totalPages: number;
+        }
+      | {
+          results: Array<{
+            id: string;
+            title: string;
+            description: string;
+            image: string;
+            imageSmall: string;
+            imageThumb: string;
+            photographer: string;
+            photographerUrl: string;
+            downloadUrl: string;
+            tags: string[];
+          }>;
+          total: number;
+          totalPages: number;
+          isDemo: true;
+        };
     
     try {
       if (provider === 'pexels') {
@@ -190,9 +223,10 @@ export async function GET(request: NextRequest) {
       } else {
         data = await searchUnsplash(query, page, perPage);
       }
-    } catch (apiError: any) {
+    } catch (apiError: unknown) {
       // If API key is not configured, return demo data
-      if (apiError.message.includes('not configured')) {
+      const message = apiError instanceof Error ? apiError.message : String(apiError);
+      if (message.includes('not configured')) {
         console.warn('⚠️ API key not configured, using demo mode');
         data = getDemoResults(query);
       } else {
@@ -209,12 +243,13 @@ export async function GET(request: NextRequest) {
       query,
       page,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Image search error:', error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to search images',
+        error: message || 'Failed to search images',
         results: [],
         total: 0,
         totalPages: 0,

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Share2, Copy, Check, Search, Loader2, Globe } from "lucide-react";
+import { Share2, Check, Search, Loader2, Globe } from "lucide-react";
 
 type CatalogItem = {
   id: string;
@@ -311,7 +311,21 @@ export default function CatalogPage() {
         throw new Error(`Axtarış uğursuz oldu (${response.status})`);
       }
 
-      const data = await response.json();
+      const data: {
+        success: boolean;
+        provider: string;
+        results: Array<{
+          id: string;
+          title: string;
+          description?: string;
+          image: string;
+          imageSmall?: string;
+          imageThumb?: string;
+          photographer?: string;
+          photographerUrl?: string;
+          tags?: string[];
+        }>;
+      } = await response.json();
       console.log("📦 API verisi:", data);
 
       if (!data.success) {
@@ -322,7 +336,7 @@ export default function CatalogPage() {
       console.log(`✅ ${data.results.length} sonuç bulundu (${data.provider} provider)`);
 
       // Map API results to CatalogItem format
-      const mappedResults: CatalogItem[] = data.results.map((item: any) => ({
+      const mappedResults: CatalogItem[] = data.results.map((item) => ({
         id: `internet-${item.id}`,
         title: item.title,
         description: item.description || item.title,
@@ -338,9 +352,10 @@ export default function CatalogPage() {
 
       console.log("✅ Sonuçlar hazırlandı:", mappedResults.length, "öğe");
       setInternetResults(mappedResults);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ Internet search error:", error);
-      setSearchError(error.message || "Axtarış zamanı xəta baş verdi");
+      const message = error instanceof Error ? error.message : "Axtarış zamanı xəta baş verdi";
+      setSearchError(message);
       setInternetResults([]);
     } finally {
       setIsSearching(false);

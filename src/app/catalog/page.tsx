@@ -81,8 +81,8 @@ export default function CatalogPage() {
         setRoomTypes(roomRes.roomTypes);
         setItems(itemsRes.items);
         setError(null);
-      } catch (e: any) {
-        setError(e.message || String(e));
+      } catch (e: unknown) {
+        setError((e instanceof Error ? e.message : String(e)) || String(e));
       } finally {
         setIsLoading(false);
       }
