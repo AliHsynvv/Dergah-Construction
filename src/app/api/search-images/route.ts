@@ -27,10 +27,22 @@ async function searchUnsplash(query: string, page: number = 1, perPage: number =
     throw new Error(`Unsplash API error: ${response.statusText}`);
   }
 
-  const data = await response.json();
+  const data: {
+    results: Array<{
+      id: string;
+      description?: string | null;
+      alt_description?: string | null;
+      urls: { regular: string; small: string; thumb: string };
+      user: { name: string; links: { html: string } };
+      links: { download_location: string };
+      tags?: Array<{ title: string }>;
+    }>;
+    total: number;
+    total_pages: number;
+  } = await response.json();
   
   return {
-    results: data.results.map((photo: any) => ({
+    results: data.results.map((photo) => ({
       id: photo.id,
       title: photo.description || photo.alt_description || 'Untitled',
       description: photo.alt_description || '',
@@ -40,7 +52,7 @@ async function searchUnsplash(query: string, page: number = 1, perPage: number =
       photographer: photo.user.name,
       photographerUrl: photo.user.links.html,
       downloadUrl: photo.links.download_location,
-      tags: photo.tags?.map((t: any) => t.title) || [],
+      tags: photo.tags?.map((t) => t.title) || [],
     })),
     total: data.total,
     totalPages: data.total_pages,
@@ -72,10 +84,20 @@ async function searchPexels(query: string, page: number = 1, perPage: number = 3
     throw new Error(`Pexels API error: ${response.statusText}`);
   }
 
-  const data = await response.json();
+  const data: {
+    photos: Array<{
+      id: number;
+      alt?: string | null;
+      src: { large: string; medium: string; small: string };
+      photographer: string;
+      photographer_url: string;
+      url: string;
+    }>;
+    total_results: number;
+  } = await response.json();
   
   return {
-    results: data.photos.map((photo: any) => ({
+    results: data.photos.map((photo) => ({
       id: photo.id.toString(),
       title: photo.alt || 'Untitled',
       description: photo.alt || '',
@@ -93,7 +115,7 @@ async function searchPexels(query: string, page: number = 1, perPage: number = 3
 }
 
 // Demo mode - returns mock data when no API key is configured
-function getDemoResults(query: string) {
+function getDemoResults(_query: string) {
   const demoImages = [
     {
       id: 'demo-1',

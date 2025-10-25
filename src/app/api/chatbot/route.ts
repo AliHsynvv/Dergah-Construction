@@ -4,7 +4,7 @@ const WEBHOOK_URL = "https://qarvqarisqa.app.n8n.cloud/webhook/01d00d54-7d74-43d
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as { sessionId?: string; message?: string; timestamp?: string };
     
     console.log("📨 Chatbot mesajı alındı:", {
       message: body.message,
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       throw new Error(`Webhook failed with status: ${response.status}. Response: ${errorText}`);
     }
 
-    let data;
+    let data: unknown;
     const contentType = response.headers.get("content-type");
     
     if (contentType && contentType.includes("application/json")) {
@@ -58,15 +58,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Try different possible response fields from n8n webhook
+    const d = data as Record<string, unknown> | string;
     const botResponse = 
-      data.output || 
-      data.response || 
-      data.message || 
-      data.text ||
-      data.reply ||
-      data.answer ||
-      (typeof data === 'string' ? data : null) ||
-      JSON.stringify(data);
+      (typeof d === 'object' && d && 'output' in d ? (d.output as string) : undefined) ||
+      (typeof d === 'object' && d && 'response' in d ? (d.response as string) : undefined) ||
+      (typeof d === 'object' && d && 'message' in d ? (d.message as string) : undefined) ||
+      (typeof d === 'object' && d && 'text' in d ? (d.text as string) : undefined) ||
+      (typeof d === 'object' && d && 'reply' in d ? (d.reply as string) : undefined) ||
+      (typeof d === 'object' && d && 'answer' in d ? (d.answer as string) : undefined) ||
+      (typeof d === 'string' ? d : null) ||
+      JSON.stringify(d);
 
     console.log("🤖 Bot cavabı:", botResponse);
 
@@ -75,14 +76,14 @@ export async function POST(request: NextRequest) {
       response: botResponse,
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Chatbot API hatası:", error);
-    
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       {
         success: false,
         error: "Mesaj göndərilərkən xəta baş verdi",
-        details: error.message,
+        details: message,
       },
       { status: 500 }
     );
