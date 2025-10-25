@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { MapPin, Phone, Mail, Clock, Instagram, Linkedin } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -13,7 +14,7 @@ export default function Footer({ darkMode }: FooterProps) {
   const currentYear = new Date().getFullYear();
   const { t } = useLanguage();
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -24,7 +25,7 @@ export default function Footer({ darkMode }: FooterProps) {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: {
       opacity: 1,
