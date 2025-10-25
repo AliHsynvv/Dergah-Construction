@@ -78,8 +78,7 @@ export default function CatalogAdmin() {
       imageUrl: item.image_url,
     });
     // If API includes images, map them; otherwise, seed with cover
-    // @ts-ignore
-    const imgs = (item as any).images?.map((i: any) => i.image_url) || (item.image_url ? [item.image_url] : []);
+    const imgs = item.images?.map((i) => i.image_url) || (item.image_url ? [item.image_url] : []);
     setImageUrls(imgs);
     setInitialImageUrls(imgs);
     setShowModal(true);
@@ -96,8 +95,9 @@ export default function CatalogAdmin() {
       } else {
         alert(res.error || "Silinmə zamanı xəta baş verdi");
       }
-    } catch (e: any) {
-      alert(e?.message || "Silinmə zamanı xəta baş verdi");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Silinmə zamanı xəta baş verdi";
+      alert(msg);
     }
   };
 
@@ -127,7 +127,10 @@ export default function CatalogAdmin() {
 
     // Creating new item
     if (!formData.designTypeId || !formData.roomTypeId || (imageUrls.length === 0 && !formData.imageUrl)) return;
-    const payload: any = { design_type_id: formData.designTypeId, room_type_id: formData.roomTypeId };
+    const payload: { design_type_id: string; room_type_id: string; image_url?: string; image_urls?: string[] } = { 
+      design_type_id: formData.designTypeId, 
+      room_type_id: formData.roomTypeId 
+    };
     if (imageUrls.length > 0) payload.image_urls = imageUrls;
     else payload.image_url = formData.imageUrl;
     const res = await fetch("/api/catalog/items", {

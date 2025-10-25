@@ -18,16 +18,18 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
 
     return NextResponse.json({ success: true, items: data });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as { design_type_id?: string; room_type_id?: string; image_url?: string; image_urls?: string[] };
     const { design_type_id, room_type_id } = body;
-    let { image_url, image_urls } = body as { image_url?: string; image_urls?: string[] };
+    let { image_url } = body;
+    const image_urls = body.image_urls;
     if (!design_type_id || !room_type_id) {
       return NextResponse.json({ success: false, error: "Missing design_type_id or room_type_id" }, { status: 400 });
     }
@@ -73,7 +75,7 @@ export async function POST(request: NextRequest) {
         const urlsToInsert = image_urls.filter((u: string) => !!u && !existingUrls.has(u));
         if (urlsToInsert.length > 0) {
           const nextPosition = (existingImages && existingImages.length > 0)
-            ? Math.max(...existingImages.map((i: any) => i.position || 0)) + 1
+            ? Math.max(...existingImages.map((i) => (i.position as number) || 0)) + 1
             : 0;
           const rows = urlsToInsert.map((url: string, idx: number) => ({ item_id: existingId, image_url: url, position: nextPosition + idx }));
           const { error: imgsError } = await supabaseServer
@@ -143,10 +145,11 @@ export async function POST(request: NextRequest) {
       .eq("id", inserted.id)
       .single();
     return NextResponse.json({ success: true, item: plain });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // eslint-disable-next-line no-console
     console.error("/api/catalog/items POST failed", error);
-    return NextResponse.json({ success: false, error: error.message || String(error) }, { status: 500 });
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
@@ -211,10 +214,11 @@ export async function PATCH(request: NextRequest) {
     if (embedError) throw embedError;
 
     return NextResponse.json({ success: true, item: withEmbed });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // eslint-disable-next-line no-console
     console.error("/api/catalog/items PATCH failed", error);
-    return NextResponse.json({ success: false, error: error.message || String(error) }, { status: 500 });
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 
@@ -244,10 +248,11 @@ export async function DELETE(request: NextRequest) {
     if (itemErr) throw itemErr;
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // eslint-disable-next-line no-console
     console.error("/api/catalog/items DELETE failed", error);
-    return NextResponse.json({ success: false, error: error.message || String(error) }, { status: 500 });
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
 

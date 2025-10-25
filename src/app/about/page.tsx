@@ -15,6 +15,9 @@ import {
   MapPin,
   Calendar,
   Building2,
+  Home,
+  TrendingUp,
+  Lightbulb,
   Handshake,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
