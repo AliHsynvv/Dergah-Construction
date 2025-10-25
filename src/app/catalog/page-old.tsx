@@ -235,145 +235,14 @@ export default function CatalogPage() {
   const [selectedDesignType, setSelectedDesignType] = useState<"all" | DesignType>("all");
   const [selectedSubCategory, setSelectedSubCategory] = useState<"all" | string>("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [internetResults, setInternetResults] = useState<CatalogItem[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchMode, setSearchMode] = useState<"local" | "internet">("local");
-  const [searchError, setSearchError] = useState<string | null>(null);
+  // Internet search removed
 
   const availableDesignTypes = useMemo<Exclude<CatalogItem["designType"], "">[]>(() => {
     const unique = Array.from(new Set(ITEMS.map((i) => i.designType)));
     return unique;
   }, []);
 
-  // Internet search function
-  const searchInternet = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      console.log("🔍 Arama sorgusu boş, sonuçlar temizleniyor");
-      setInternetResults([]);
-      return;
-    }
-
-    console.log("🔍 İnternet araması başlatılıyor:", searchQuery);
-    setIsSearching(true);
-    setSearchError(null);
-
-    try {
-      // Map design types to English for better search results
-      const designTypeMap: Record<string, string> = {
-        modern: "modern",
-        minimal: "minimalist",
-        klassik: "classic",
-        digər: "contemporary",
-      };
-
-      const subCategoryMap: Record<string, string> = {
-        "qonaq-otagi": "living room",
-        "yataq-otagi": "bedroom",
-        "metbex": "kitchen",
-      };
-
-      let enhancedQuery = searchQuery;
-      
-      // Enhance query based on selected filters
-      if (selectedDesignType !== "all") {
-        enhancedQuery += ` ${designTypeMap[selectedDesignType]} design`;
-      }
-      
-      if (selectedSubCategory !== "all") {
-        enhancedQuery += ` ${subCategoryMap[selectedSubCategory]}`;
-      }
-
-      // Add context based on category
-      if (activeCategory === "interyer") {
-        enhancedQuery += " interior design";
-      } else if (activeCategory === "villa") {
-        enhancedQuery += " villa home";
-      } else if (activeCategory === "ofis") {
-        enhancedQuery += " office design";
-      } else if (activeCategory === "memarlik") {
-        enhancedQuery += " architecture";
-      } else {
-        enhancedQuery += " interior design architecture";
-      }
-
-      console.log("📝 Geliştirilmiş arama sorgusu:", enhancedQuery);
-
-      const apiUrl = `/api/search-images?q=${encodeURIComponent(enhancedQuery)}&per_page=30`;
-      console.log("🌐 API isteği gönderiliyor:", apiUrl);
-
-      const response = await fetch(apiUrl);
-
-      console.log("📡 API yanıtı alındı:", response.status, response.statusText);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("❌ API hatası:", errorText);
-        throw new Error(`Axtarış uğursuz oldu (${response.status})`);
-      }
-
-      const data: {
-        success: boolean;
-        provider: string;
-        results: Array<{
-          id: string;
-          title: string;
-          description?: string;
-          image: string;
-          imageSmall?: string;
-          imageThumb?: string;
-          photographer?: string;
-          photographerUrl?: string;
-          tags?: string[];
-        }>;
-      } = await response.json();
-      console.log("📦 API verisi:", data);
-
-      if (!data.success) {
-        console.error("❌ API başarısız:", data.error);
-        throw new Error(data.error || "Axtarış uğursuz oldu");
-      }
-
-      console.log(`✅ ${data.results.length} sonuç bulundu (${data.provider} provider)`);
-
-      // Map API results to CatalogItem format
-      const mappedResults: CatalogItem[] = data.results.map((item) => ({
-        id: `internet-${item.id}`,
-        title: item.title,
-        description: item.description || item.title,
-        category: activeCategory === "all" ? "interyer" : activeCategory,
-        designType: selectedDesignType === "all" ? "modern" : selectedDesignType,
-        subCategory: selectedSubCategory === "all" ? "qonaq-otagi" : selectedSubCategory,
-        tags: item.tags || [],
-        image: item.image,
-        photographer: item.photographer,
-        photographerUrl: item.photographerUrl,
-        isFromInternet: true,
-      }));
-
-      console.log("✅ Sonuçlar hazırlandı:", mappedResults.length, "öğe");
-      setInternetResults(mappedResults);
-    } catch (error: unknown) {
-      console.error("❌ Internet search error:", error);
-      const message = error instanceof Error ? error.message : "Axtarış zamanı xəta baş verdi";
-      setSearchError(message);
-      setInternetResults([]);
-    } finally {
-      setIsSearching(false);
-      console.log("✅ Arama tamamlandı");
-    }
-  }, [activeCategory, selectedDesignType, selectedSubCategory]);
-
-  // Debounced internet search
-  useEffect(() => {
-    if (searchMode === "internet" && query.trim()) {
-      const timer = setTimeout(() => {
-        searchInternet(query);
-      }, 800);
-      return () => clearTimeout(timer);
-    } else if (searchMode === "internet" && !query.trim()) {
-      setInternetResults([]);
-    }
-  }, [query, searchMode, searchInternet]);
+  // Internet search removed
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -448,20 +317,12 @@ export default function CatalogPage() {
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={
-                    searchMode === "internet"
-                      ? "İnternetdən axtar: construction, design, interior..."
-                      : "Məs: minimal dizayn, villa, ofis..."
-                  }
+                  placeholder={"Məs: minimal dizayn, villa, ofis..."}
                   className="w-full rounded-2xl border border-slate-200/50 bg-white/90 backdrop-blur-xl px-4 md:px-5 py-3 md:py-3.5 pr-12 text-sm placeholder:text-slate-400 text-slate-900 focus:outline-none focus:border-brand/40 focus:bg-white shadow-sm hover:shadow-md focus:shadow-lg transition-all duration-300"
                   aria-label="Kataloq axtarış"
                 />
                 <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-brand/5">
-                  {isSearching ? (
-                    <Loader2 className="h-4 w-4 text-brand animate-spin" />
-                  ) : (
-                    <Search className="h-4 w-4 text-brand" />
-                  )}
+                  <Search className="h-4 w-4 text-brand" />
                 </div>
               </div>
             </div>
