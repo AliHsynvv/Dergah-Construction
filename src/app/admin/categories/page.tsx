@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
   X,
   Save,
   Folder,
-  Tag,
   Hash,
   Palette,
   Layers
@@ -335,13 +334,13 @@ export default function CategoriesAdmin() {
       .replace(/ç/g, 'c')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '');
-    
+
     if (type === "category") {
-      setCategoryForm({...categoryForm, name, slug});
+      setCategoryForm({ ...categoryForm, name, slug });
     } else if (type === "designType") {
-      setDesignTypeForm({...designTypeForm, name, slug});
+      setDesignTypeForm({ ...designTypeForm, name, slug });
     } else {
-      setSubCategoryForm({...subCategoryForm, name, slug});
+      setSubCategoryForm({ ...subCategoryForm, name, slug });
     }
   };
 
@@ -389,33 +388,30 @@ export default function CategoriesAdmin() {
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab("categories")}
-            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-              activeTab === "categories"
+            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${activeTab === "categories"
                 ? "bg-gradient-to-r from-brand to-orange-600 text-white shadow-lg"
                 : "text-slate-600 hover:bg-slate-100"
-            }`}
+              }`}
           >
             <Folder className="w-5 h-5" />
             Əsas Kateqoriyalar
           </button>
           <button
             onClick={() => setActiveTab("designTypes")}
-            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-              activeTab === "designTypes"
+            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${activeTab === "designTypes"
                 ? "bg-gradient-to-r from-brand to-orange-600 text-white shadow-lg"
                 : "text-slate-600 hover:bg-slate-100"
-            }`}
+              }`}
           >
             <Palette className="w-5 h-5" />
             Dizayn Tipləri
           </button>
           <button
             onClick={() => setActiveTab("subCategories")}
-            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-              activeTab === "subCategories"
+            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${activeTab === "subCategories"
                 ? "bg-gradient-to-r from-brand to-orange-600 text-white shadow-lg"
                 : "text-slate-600 hover:bg-slate-100"
-            }`}
+              }`}
           >
             <Layers className="w-5 h-5" />
             Alt Kateqoriyalar
@@ -430,11 +426,10 @@ export default function CategoriesAdmin() {
             <Search className="w-5 h-5 text-slate-400" />
             <input
               type="text"
-              placeholder={`${
-                activeTab === "categories" ? "Əsas kateqoriya" :
-                activeTab === "designTypes" ? "Dizayn tipi" :
-                "Alt kateqoriya"
-              } axtar...`}
+              placeholder={`${activeTab === "categories" ? "Əsas kateqoriya" :
+                  activeTab === "designTypes" ? "Dizayn tipi" :
+                    "Alt kateqoriya"
+                } axtar...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-1 outline-none text-slate-900 placeholder:text-slate-400"
@@ -630,11 +625,11 @@ export default function CategoriesAdmin() {
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-slate-900">
-                {modalType === "category" 
+                {modalType === "category"
                   ? (editingCategory ? "Kateqoriya Redaktə Et" : "Yeni Kateqoriya")
                   : modalType === "designType"
-                  ? (editingDesignType ? "Dizayn Tipi Redaktə Et" : "Yeni Dizayn Tipi")
-                  : (editingSubCategory ? "Alt Kateqoriya Redaktə Et" : "Yeni Alt Kateqoriya")
+                    ? (editingDesignType ? "Dizayn Tipi Redaktə Et" : "Yeni Dizayn Tipi")
+                    : (editingSubCategory ? "Alt Kateqoriya Redaktə Et" : "Yeni Alt Kateqoriya")
                 }
               </h2>
               <button
@@ -669,7 +664,7 @@ export default function CategoriesAdmin() {
                     <input
                       type="text"
                       value={categoryForm.slug}
-                      onChange={(e) => setCategoryForm({...categoryForm, slug: e.target.value})}
+                      onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-slate-50"
                       placeholder="kateqoriya-slug"
                     />
@@ -681,7 +676,7 @@ export default function CategoriesAdmin() {
                     </label>
                     <textarea
                       value={categoryForm.description}
-                      onChange={(e) => setCategoryForm({...categoryForm, description: e.target.value})}
+                      onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
                       rows={4}
                       className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all resize-none"
                       placeholder="Kateqoriya haqqında qısa məlumat"
@@ -698,12 +693,11 @@ export default function CategoriesAdmin() {
                           <button
                             key={color.value}
                             type="button"
-                            onClick={() => setCategoryForm({...categoryForm, color: color.value})}
-                            className={`h-12 rounded-lg ${color.class} transition-all duration-200 ${
-                              categoryForm.color === color.value
+                            onClick={() => setCategoryForm({ ...categoryForm, color: color.value })}
+                            className={`h-12 rounded-lg ${color.class} transition-all duration-200 ${categoryForm.color === color.value
                                 ? "ring-4 ring-slate-900 ring-offset-2 scale-110"
                                 : "hover:scale-105"
-                            }`}
+                              }`}
                             title={color.label}
                           />
                         ))}
@@ -717,7 +711,7 @@ export default function CategoriesAdmin() {
                       <input
                         type="text"
                         value={categoryForm.icon}
-                        onChange={(e) => setCategoryForm({...categoryForm, icon: e.target.value})}
+                        onChange={(e) => setCategoryForm({ ...categoryForm, icon: e.target.value })}
                         className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all text-center text-3xl"
                         placeholder="📁"
                         maxLength={2}
@@ -771,7 +765,7 @@ export default function CategoriesAdmin() {
                     <input
                       type="text"
                       value={designTypeForm.slug}
-                      onChange={(e) => setDesignTypeForm({...designTypeForm, slug: e.target.value})}
+                      onChange={(e) => setDesignTypeForm({ ...designTypeForm, slug: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-slate-50"
                       placeholder="dizayn-tipi-slug"
                     />
@@ -783,7 +777,7 @@ export default function CategoriesAdmin() {
                     </label>
                     <textarea
                       value={designTypeForm.description}
-                      onChange={(e) => setDesignTypeForm({...designTypeForm, description: e.target.value})}
+                      onChange={(e) => setDesignTypeForm({ ...designTypeForm, description: e.target.value })}
                       rows={4}
                       className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all resize-none"
                       placeholder="Dizayn tipi haqqında qısa məlumat"
@@ -815,7 +809,7 @@ export default function CategoriesAdmin() {
                     <input
                       type="text"
                       value={subCategoryForm.slug}
-                      onChange={(e) => setSubCategoryForm({...subCategoryForm, slug: e.target.value})}
+                      onChange={(e) => setSubCategoryForm({ ...subCategoryForm, slug: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-slate-50"
                       placeholder="alt-kateqoriya-slug"
                     />
@@ -827,7 +821,7 @@ export default function CategoriesAdmin() {
                     </label>
                     <select
                       value={subCategoryForm.parentCategory}
-                      onChange={(e) => setSubCategoryForm({...subCategoryForm, parentCategory: e.target.value})}
+                      onChange={(e) => setSubCategoryForm({ ...subCategoryForm, parentCategory: e.target.value })}
                       className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all"
                     >
                       <option value="">Əsas kateqoriya seçin</option>
@@ -843,7 +837,7 @@ export default function CategoriesAdmin() {
                     </label>
                     <textarea
                       value={subCategoryForm.description}
-                      onChange={(e) => setSubCategoryForm({...subCategoryForm, description: e.target.value})}
+                      onChange={(e) => setSubCategoryForm({ ...subCategoryForm, description: e.target.value })}
                       rows={4}
                       className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all resize-none"
                       placeholder="Alt kateqoriya haqqında qısa məlumat"

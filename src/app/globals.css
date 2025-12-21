@@ -119,3 +119,15 @@ html.dark body {
   scrollbar-width: thin;
   scrollbar-color: rgba(30, 58, 138, 0.2) transparent;
 }
+
+/* Custom Animations */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% auto;
+  animation: gradient 8s ease infinite;
+}

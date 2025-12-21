@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { 
-  Images, 
-  FolderOpen, 
-  Tags, 
-  TrendingUp, 
-  Users, 
+import {
+  Images,
+  FolderOpen,
+  Tags,
   Eye,
   Plus,
   ArrowUpRight,
@@ -78,7 +76,7 @@ export default function AdminDashboard() {
             green: "from-green-500 to-green-600 border-green-200",
             orange: "from-orange-500 to-orange-600 border-orange-200",
           };
-          
+
           return (
             <Link
               key={stat.label}
@@ -87,7 +85,7 @@ export default function AdminDashboard() {
             >
               {/* Background Gradient on Hover */}
               <div className={`absolute inset-0 bg-gradient-to-br ${colorClasses[stat.color as keyof typeof colorClasses]} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-              
+
               <div className="relative">
                 <div className="flex items-start justify-between mb-4">
                   <div className={`p-3 rounded-xl bg-gradient-to-br ${colorClasses[stat.color as keyof typeof colorClasses].split(' ')[0]} ${colorClasses[stat.color as keyof typeof colorClasses].split(' ')[1]}`}>
@@ -100,9 +98,8 @@ export default function AdminDashboard() {
                   <p className="text-sm font-medium text-slate-600 mb-1">{stat.label}</p>
                   <div className="flex items-end gap-2">
                     <p className="text-3xl font-bold text-slate-900">{stat.value}</p>
-                    <span className={`text-sm font-semibold mb-1 ${
-                      stat.trend === "up" ? "text-green-600" : stat.trend === "down" ? "text-red-600" : "text-slate-500"
-                    }`}>
+                    <span className={`text-sm font-semibold mb-1 ${stat.trend === "up" ? "text-green-600" : stat.trend === "down" ? "text-red-600" : "text-slate-500"
+                      }`}>
                       {stat.change}
                     </span>
                   </div>
@@ -150,11 +147,10 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                  item.status === "active" 
-                    ? "bg-green-100 text-green-700" 
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.status === "active"
+                    ? "bg-green-100 text-green-700"
                     : "bg-yellow-100 text-yellow-700"
-                }`}>
+                  }`}>
                   {item.status === "active" ? "Aktiv" : "Draft"}
                 </span>
               </div>

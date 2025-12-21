@@ -12,49 +12,36 @@ export default function ServicesPage() {
 
   // Load dark mode preference from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('darkMode');
-    if (saved !== null) {
-      setDarkMode(JSON.parse(saved));
-    }
-
-    // Listen for dark mode changes from other components
-    const handleStorageChange = () => {
+    const checkDarkMode = () => {
       const saved = localStorage.getItem('darkMode');
       if (saved !== null) {
         setDarkMode(JSON.parse(saved));
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also listen for custom event from same page
-    const handleDarkModeChange = () => {
-      const saved = localStorage.getItem('darkMode');
-      if (saved !== null) {
-        setDarkMode(JSON.parse(saved));
-      }
-    };
-    
-    window.addEventListener('darkModeChange', handleDarkModeChange);
+    checkDarkMode();
+    window.addEventListener('storage', checkDarkMode);
+    window.addEventListener('darkModeChange', checkDarkMode);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('darkModeChange', handleDarkModeChange);
+      window.removeEventListener('storage', checkDarkMode);
+      window.removeEventListener('darkModeChange', checkDarkMode);
     };
   }, []);
 
   return (
-    <main className={`min-h-screen transition-colors duration-500 ${
-      darkMode ? 'bg-slate-900' : 'bg-white'
-    }`}>
-
-      <section className={`relative pt-32 md:pt-40 pb-20 md:pb-24 transition-colors duration-500 ${
-        darkMode 
-          ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900/95' 
-          : 'bg-gradient-to-br from-white via-slate-50 to-blue-50/30'
+    <main className={`min-h-screen transition-colors duration-500 relative overflow-hidden ${darkMode ? 'bg-slate-950' : 'bg-slate-50'
       }`}>
+
+      {/* Premium Ambient Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className={`absolute top-0 right-0 w-[800px] h-[800px] rounded-full blur-[120px] opacity-20 transition-all duration-1000 ${darkMode ? 'bg-blue-900/40' : 'bg-blue-200/60'}`} />
+        <div className={`absolute bottom-0 left-0 w-[600px] h-[600px] rounded-full blur-[100px] opacity-20 transition-all duration-1000 ${darkMode ? 'bg-indigo-900/30' : 'bg-indigo-200/50'}`} />
+      </div>
+
+      <section className="relative pt-32 md:pt-40 pb-20 md:pb-24">
         <motion.div
-          className="mx-auto max-w-7xl px-6"
+          className="mx-auto max-w-7xl px-4 sm:px-6"
           style={{ y: y1, opacity }}
         >
           <Services darkMode={darkMode} />

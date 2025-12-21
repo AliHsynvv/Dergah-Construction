@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
   X,
   Upload,
   Save,
@@ -25,7 +25,7 @@ interface CatalogItemRow {
 }
 
 export default function CatalogAdmin() {
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [catalogItems, setCatalogItems] = useState<CatalogItemRow[]>([]);
 
   const [showModal, setShowModal] = useState(false);
@@ -127,9 +127,9 @@ export default function CatalogAdmin() {
 
     // Creating new item
     if (!formData.designTypeId || !formData.roomTypeId || (imageUrls.length === 0 && !formData.imageUrl)) return;
-    const payload: { design_type_id: string; room_type_id: string; image_url?: string; image_urls?: string[] } = { 
-      design_type_id: formData.designTypeId, 
-      room_type_id: formData.roomTypeId 
+    const payload: { design_type_id: string; room_type_id: string; image_url?: string; image_urls?: string[] } = {
+      design_type_id: formData.designTypeId,
+      room_type_id: formData.roomTypeId
     };
     if (imageUrls.length > 0) payload.image_urls = imageUrls;
     else payload.image_url = formData.imageUrl;
@@ -199,17 +199,15 @@ export default function CatalogAdmin() {
             <div className="flex gap-1 border border-slate-200 rounded-lg p-1 bg-white">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === "grid" ? "bg-gradient-to-r from-brand to-blue-700 text-white" : "text-slate-600 hover:bg-slate-100"
-                }`}
+                className={`p-2 rounded transition-colors ${viewMode === "grid" ? "bg-gradient-to-r from-brand to-blue-700 text-white" : "text-slate-600 hover:bg-slate-100"
+                  }`}
               >
                 <Grid className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded transition-colors ${
-                  viewMode === "list" ? "bg-gradient-to-r from-brand to-blue-700 text-white" : "text-slate-600 hover:bg-slate-100"
-                }`}
+                className={`p-2 rounded transition-colors ${viewMode === "list" ? "bg-gradient-to-r from-brand to-blue-700 text-white" : "text-slate-600 hover:bg-slate-100"
+                  }`}
               >
                 <List className="w-4 h-4" />
               </button>
@@ -266,7 +264,7 @@ export default function CatalogAdmin() {
                 </div>
                 {item.images && item.images.length > 1 && (
                   <div className="absolute bottom-2 left-2 flex gap-1">
-                    {item.images.slice(0,5).map((img, idx) => (
+                    {item.images.slice(0, 5).map((img, idx) => (
                       <span key={idx} className="w-1.5 h-1.5 rounded-full bg-white/70"></span>
                     ))}
                   </div>
@@ -374,7 +372,7 @@ export default function CatalogAdmin() {
                   </label>
                   <select
                     value={formData.designTypeId}
-                    onChange={async (e) => setFormData({...formData, designTypeId: e.target.value, roomTypeId: ""})}
+                    onChange={async (e) => setFormData({ ...formData, designTypeId: e.target.value, roomTypeId: "" })}
                     className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-white text-slate-900"
                   >
                     <option value="">Dizayn tipi seçin</option>
@@ -390,7 +388,7 @@ export default function CatalogAdmin() {
                   </label>
                   <select
                     value={formData.roomTypeId}
-                    onChange={(e) => setFormData({...formData, roomTypeId: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, roomTypeId: e.target.value })}
                     className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-white text-slate-900"
                   >
                     <option value="">Room type seçin</option>
@@ -401,7 +399,7 @@ export default function CatalogAdmin() {
                 </div>
               </div>
 
-              
+
 
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">
@@ -412,11 +410,11 @@ export default function CatalogAdmin() {
                     <input
                       type="text"
                       value={formData.imageUrl}
-                      onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && formData.imageUrl.trim()) {
                           setImageUrls([...imageUrls, formData.imageUrl.trim()]);
-                          setFormData({...formData, imageUrl: ""});
+                          setFormData({ ...formData, imageUrl: "" });
                         }
                       }}
                       className="flex-1 px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-white text-slate-900 placeholder:text-slate-500"

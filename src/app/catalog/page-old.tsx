@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Share2, Check, Search, Loader2, Globe } from "lucide-react";
+import { Share2, Check, Search, Globe } from "lucide-react";
 
 type CatalogItem = {
   id: string;
@@ -117,7 +117,7 @@ function HorizontalSlider({ items, onShare, copiedId }: {
         onClick={() => scrollBy(-1)}
         className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/80 backdrop-blur hover:bg-white"
       >
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>
       </button>
       <div
         ref={containerRef}
@@ -150,29 +150,29 @@ function HorizontalSlider({ items, onShare, copiedId }: {
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex-1 min-w-0">
                   {/* Title - Max 2 lines with ellipsis */}
-                  <h3 
-                    className="text-base md:text-lg font-semibold tracking-tight line-clamp-2" 
+                  <h3
+                    className="text-base md:text-lg font-semibold tracking-tight line-clamp-2"
                     title={item.title}
                   >
                     {item.title}
                   </h3>
-                  
+
                   {/* Description - Max 2 lines with ellipsis */}
-                  <p 
-                    className="mt-1 text-sm text-slate-700 leading-relaxed line-clamp-2" 
+                  <p
+                    className="mt-1 text-sm text-slate-700 leading-relaxed line-clamp-2"
                     title={item.description}
                   >
                     {item.description}
                   </p>
-                  
+
                   {/* Photographer - Truncate if too long */}
                   {item.photographer && (
                     <p className="mt-1 text-xs text-slate-500 truncate">
                       Foto:{" "}
                       {item.photographerUrl ? (
-                        <a 
-                          href={item.photographerUrl} 
-                          target="_blank" 
+                        <a
+                          href={item.photographerUrl}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:underline"
                           title={item.photographer}
@@ -204,8 +204,8 @@ function HorizontalSlider({ items, onShare, copiedId }: {
                   {CATEGORIES.find((c) => c.key === item.category)?.label ?? item.category}
                 </span>
                 {item.tags.slice(0, 2).map((t, idx) => (
-                  <span 
-                    key={`${t}-${idx}`} 
+                  <span
+                    key={`${t}-${idx}`}
                     className="inline-flex items-center rounded-lg bg-blue-50 text-blue-700 px-2.5 py-1 text-xs truncate max-w-[100px]"
                     title={t}
                   >
@@ -223,7 +223,7 @@ function HorizontalSlider({ items, onShare, copiedId }: {
         onClick={() => scrollBy(1)}
         className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/80 backdrop-blur hover:bg-white"
       >
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" /></svg>
       </button>
     </div>
   );
@@ -231,7 +231,7 @@ function HorizontalSlider({ items, onShare, copiedId }: {
 
 export default function CatalogPage() {
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeCategory,] = useState<string>("all");
   const [selectedDesignType, setSelectedDesignType] = useState<"all" | DesignType>("all");
   const [selectedSubCategory, setSelectedSubCategory] = useState<"all" | string>("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -285,7 +285,7 @@ export default function CatalogPage() {
           text: shareText,
           url: shareUrl,
         });
-      } catch (err) {
+      } catch {
         // User cancelled sharing
         console.log('Sharing cancelled');
       }
@@ -304,7 +304,7 @@ export default function CatalogPage() {
   return (
     <main className="pt-36 pb-16 overflow-x-hidden bg-white">
       <div className="mx-auto max-w-7xl px-0 md:px-6">
-        
+
 
         {/* Search */}
         <div className="flex flex-col gap-4 mb-6 md:mb-8">
@@ -344,7 +344,7 @@ export default function CatalogPage() {
         {/* Design type selector sidebar (md+) and horizontal (mobile) + subcategories on right */}
         <div className="mb-6 md:mb-8 grid grid-cols-1 md:grid-cols-[320px_1fr] gap-6">
           <aside className="md:sticky md:top-24 md:self-start">
-          <div className="text-sm font-medium text-slate-700 mb-2">Dizayn tipi</div>
+            <div className="text-sm font-medium text-slate-700 mb-2">Dizayn tipi</div>
 
             {/* Design Type Selector - Full Image with Overlay Text */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-col gap-3">
@@ -360,17 +360,15 @@ export default function CatalogPage() {
               >
                 <div className="relative w-full h-full">
                   <Image src="/portfolio/vl2.png" alt="Hamısı" fill className="object-cover" />
-                  <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
-                    selectedDesignType === "all"
-                      ? "from-brand/80 to-brand/40"
-                      : "from-black/60 to-black/20 group-hover:from-black/50 group-hover:to-black/10"
-                  }`} />
+                  <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${selectedDesignType === "all"
+                    ? "from-brand/80 to-brand/40"
+                    : "from-black/60 to-black/20 group-hover:from-black/50 group-hover:to-black/10"
+                    }`} />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={`text-sm md:text-base font-semibold transition-all duration-300 ${
-                      selectedDesignType === "all"
-                        ? "text-white"
-                        : "text-white group-hover:text-slate-100"
-                    }`}>
+                    <span className={`text-sm md:text-base font-semibold transition-all duration-300 ${selectedDesignType === "all"
+                      ? "text-white"
+                      : "text-white group-hover:text-slate-100"
+                      }`}>
                       Hamısı
                     </span>
                   </div>
@@ -393,17 +391,15 @@ export default function CatalogPage() {
                 >
                   <div className="relative w-full h-full">
                     <Image src={DESIGN_TYPE_THUMBS[dt]} alt={DESIGN_TYPE_LABEL[dt]} fill className="object-cover" />
-                    <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${
-                      selectedDesignType === dt
-                        ? "from-brand/80 to-brand/40"
-                        : "from-black/60 to-black/20 group-hover:from-black/50 group-hover:to-black/10"
-                    }`} />
+                    <div className={`absolute inset-0 bg-gradient-to-t transition-all duration-300 ${selectedDesignType === dt
+                      ? "from-brand/80 to-brand/40"
+                      : "from-black/60 to-black/20 group-hover:from-black/50 group-hover:to-black/10"
+                      }`} />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className={`text-sm md:text-base font-semibold transition-all duration-300 ${
-                        selectedDesignType === dt
-                          ? "text-white"
-                          : "text-white group-hover:text-slate-100"
-                      }`}>
+                      <span className={`text-sm md:text-base font-semibold transition-all duration-300 ${selectedDesignType === dt
+                        ? "text-white"
+                        : "text-white group-hover:text-slate-100"
+                        }`}>
                         {DESIGN_TYPE_LABEL[dt]}
                       </span>
                     </div>
@@ -415,40 +411,40 @@ export default function CatalogPage() {
 
           {/* Subcategories + Results on the right */}
           <div className="min-w-0">
-          <AnimatePresence initial={false}>
-            {selectedDesignType !== "all" && (
-              <motion.div
+            <AnimatePresence initial={false}>
+              {selectedDesignType !== "all" && (
+                <motion.div
                   key={`subs-${selectedDesignType}`}
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ type: "spring", stiffness: 260, damping: 26 }}
-              >
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 26 }}
+                >
                   <div className="text-xs text-slate-600 mb-2">
-                  Alt kateqoriya — {DESIGN_TYPE_LABEL[selectedDesignType]}
-                </div>
-                <div className="flex items-center gap-2 overflow-x-auto">
-                  {DESIGN_SUBCATEGORIES[selectedDesignType].map((sc) => (
-                    <motion.button
-                      key={sc.key}
-                      layout
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setSelectedSubCategory(sc.key)}
-                      className={
-                        "px-4 py-2.5 rounded-full text-sm transition-all duration-300 whitespace-nowrap shadow-sm focus:outline-none focus:ring-2 font-medium " +
-                        (selectedSubCategory === sc.key
-                          ? "bg-gradient-to-r from-brand to-blue-700 text-white focus:ring-brand/40 shadow-lg scale-105"
-                          : "bg-white/80 backdrop-blur-md text-slate-700 border-2 border-slate-200/60 hover:bg-white hover:border-slate-300 hover:shadow-md hover:scale-105 focus:ring-brand/30")
-                      }
-                    >
-                      {sc.label}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                    Alt kateqoriya — {DESIGN_TYPE_LABEL[selectedDesignType]}
+                  </div>
+                  <div className="flex items-center gap-2 overflow-x-auto">
+                    {DESIGN_SUBCATEGORIES[selectedDesignType].map((sc) => (
+                      <motion.button
+                        key={sc.key}
+                        layout
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedSubCategory(sc.key)}
+                        className={
+                          "px-4 py-2.5 rounded-full text-sm transition-all duration-300 whitespace-nowrap shadow-sm focus:outline-none focus:ring-2 font-medium " +
+                          (selectedSubCategory === sc.key
+                            ? "bg-gradient-to-r from-brand to-blue-700 text-white focus:ring-brand/40 shadow-lg scale-105"
+                            : "bg-white/80 backdrop-blur-md text-slate-700 border-2 border-slate-200/60 hover:bg-white hover:border-slate-300 hover:shadow-md hover:scale-105 focus:ring-brand/30")
+                        }
+                      >
+                        {sc.label}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Animated Results within right column */}
             <div className="mt-4">
@@ -501,7 +497,7 @@ export default function CatalogPage() {
                           <h3 className="text-lg font-semibold mb-2">Heç nə tapılmadı</h3>
                           <p className="text-slate-600">Başqa açar sözlər yoxlayın və ya filtr kriteriyalarını dəyişin.</p>
                         </div>
-          )}
+                      )}
                     </>
                   )}
                 </motion.div>

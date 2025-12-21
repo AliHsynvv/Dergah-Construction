@@ -1,15 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
-  Eye, 
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
   X,
   Upload,
-  Image as ImageIcon,
   Save
 } from "lucide-react";
 import Image from "next/image";
@@ -186,11 +184,10 @@ export default function PortfolioAdmin() {
             <div className="p-4">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-bold text-slate-900 text-lg">{item.title}</h3>
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                  item.status === "active" 
-                    ? "bg-green-100 text-green-700" 
+                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${item.status === "active"
+                    ? "bg-green-100 text-green-700"
                     : "bg-yellow-100 text-yellow-700"
-                }`}>
+                  }`}>
                   {item.status === "active" ? "Aktiv" : "Draft"}
                 </span>
               </div>
@@ -228,7 +225,7 @@ export default function PortfolioAdmin() {
                 <input
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all"
                   placeholder="Layihə başlığı"
                 />
@@ -240,7 +237,7 @@ export default function PortfolioAdmin() {
                 </label>
                 <select
                   value={formData.category}
-                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all"
                 >
                   <option value="">Kateqoriya seçin</option>
@@ -258,7 +255,7 @@ export default function PortfolioAdmin() {
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={4}
                   className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all resize-none"
                   placeholder="Layihə haqqında qısa məlumat"
@@ -273,7 +270,7 @@ export default function PortfolioAdmin() {
                   <input
                     type="text"
                     value={formData.image}
-                    onChange={(e) => setFormData({...formData, image: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     className="flex-1 px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all"
                     placeholder="/portfolio/image.png"
                   />
@@ -289,7 +286,7 @@ export default function PortfolioAdmin() {
                 </label>
                 <select
                   value={formData.status}
-                  onChange={(e) => setFormData({...formData, status: e.target.value as "active" | "draft"})}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as "active" | "draft" })}
                   className="w-full px-4 py-3 rounded-lg border border-slate-200 outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all"
                 >
                   <option value="active">Aktiv</option>

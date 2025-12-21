@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       .eq("image_url", image_url)
       .limit(1);
     if (existingCoverErr) {
-      // eslint-disable-next-line no-console
+
       console.warn("catalog_items duplicate check warning", existingCoverErr);
     }
 
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
           .eq("item_id", existingId)
           .order("position", { ascending: true });
         if (existingImgsErr) {
-          // eslint-disable-next-line no-console
+
           console.warn("catalog_item_images select warning", existingImgsErr);
         }
 
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
             .from("catalog_item_images")
             .insert(rows);
           if (imgsError) {
-            // eslint-disable-next-line no-console
+
             console.warn("catalog_item_images append warning", imgsError);
           }
         }
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       .select("id")
       .single();
     if (insertError) {
-      // eslint-disable-next-line no-console
+
       console.error("catalog_items insert error", { error: insertError, body });
       throw insertError;
     }
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
         .from("catalog_item_images")
         .insert(rows);
       if (imgsError) {
-        // eslint-disable-next-line no-console
+
         console.warn("catalog_item_images insert warning", imgsError);
       }
     }
@@ -236,7 +236,7 @@ export async function DELETE(request: NextRequest) {
       .delete()
       .eq("item_id", id);
     if (imgsErr) {
-      // eslint-disable-next-line no-console
+
       console.warn("catalog_item_images delete warning", imgsErr);
     }
 
@@ -249,7 +249,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    // eslint-disable-next-line no-console
+
     console.error("/api/catalog/items DELETE failed", error);
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json({ success: false, error: message }, { status: 500 });
